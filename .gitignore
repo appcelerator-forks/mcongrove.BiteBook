@@ -3,3 +3,7 @@
 .DS_Store
 
 /mobile/Resources
+
+/mobile/app/assets/android
+
+/mobile/platform
