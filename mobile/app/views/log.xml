@@ -1,0 +1,20 @@
+<Alloy>
+	<Window id="LogWindow" title="Log Fish">
+		<View class="row" id="RowSpecies">
+			<Label class="key" text="Species" />
+			<Label id="ValueSpecies" class="value" text="Tap to Select" />
+		</View>
+		
+		<View class="row" id="RowWeight">
+			<Label class="key" text="Weight" />
+			<Label id="ValueWeight" class="value" text="0 lb 0 oz" />
+		</View>
+		
+		<View class="row" id="RowLength">
+			<Label class="key" text="Species" />
+			<Label id="ValueLength" class="value" text="0 ft 0 in" />
+		</View>
+		
+		<Button id="Submit" title="Submit" />
+	</Window>
+</Alloy>

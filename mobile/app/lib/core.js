@@ -38,15 +38,10 @@ var App = {
 		orientation: Ti.Gesture.orientation == Ti.UI.LANDSCAPE_LEFT || Ti.Gesture.orientation == Ti.UI.LANDSCAPE_RIGHT ? "landscape" : "portrait"
 	},
 	/**
-	 * The navigator object which handles all navigation
+	 * The global tab group used in the app.
 	 * @type {Object}
 	 */
-	Navigator: {},
-	/**
-	 * The global navigation window used in the app.  iOS only.
-	 * @type {Object}
-	 */
-	navigationWindow: null,
+	TabGroup: null,
 	/**
 	 * Sets up the app singleton and all it's child dependencies.
 	 * **NOTE: This should only be fired in index controller file and only once.**
@@ -62,78 +57,11 @@ var App = {
 		if(OS_ANDROID) {
 			Ti.Android.currentActivity.addEventListener("resume", App.resume);
 		}
-
-		// Require in the navigation module
-		App.Navigator = require("navigation")({
-			parent: App.navigationWindow || null
-		});
+		
+		App.TabGroup.open();
 
 		// Get device dimensions
 		App.getDeviceDimensions();
-	},
-	/**
-	 * Helper to bind the orientation events to a controller.
-	 *
-	 * **NOTE** It is VERY important this is
-	 * managed right because we're adding global events. They must be removed
-	 * or a leak can happen because of all the closures. We could slightly
-	 * reduce the closures if we placed these in the individual controllers
-	 * but then we're duplicating code. This keeps the controllers clean. Currently,
-	 * this method will _add_ and _remove_ the global events, so things should go
-	 * out of scope and GC'd correctly.
-	 *
-	 * @param {Controllers} _controller The controller to bind the orientation events
-	 */
-	bindOrientationEvents: function(_controller) {
-		_controller.window.addEventListener("close", function() {
-			if(_controller.handleOrientation) {
-				Ti.App.removeEventListener("orientationChange", _controller.handleOrientation);
-			}
-		});
-		
-		_controller.window.addEventListener("open", function() {
-			Ti.App.addEventListener("orientationChange", function(_event) {
-				if(_controller.handleOrientation) {
-					_controller.handleOrientation(_event);
-				}
-				
-				App.setViewsForOrientation(_controller);
-			});
-		});
-	},
-	/**
-	 * Update views for current orientation helper
-	 *
-	 * We're doing this because Alloy does not have support for
-	 * orientation support in tss files yet. In order not to duplicate
-	 * a ton of object properties, hardcode them, etc. we're using this method.
-	 *
-	 * Once Alloy has orientation support (e.g. `#myElement[orientation=landscape]`), this
-	 * can be removed and the tss reworked.
-	 *
-	 * All that has to be done is implement the following structure in a `.tss` file:
-	 * 		"#myElement": {
-	 * 			landscape: { backgroundColor: "red" },
-	 * 			portrait: { backgroundColor: "green" }
-	 * 		}
-	 *
-	 * @param {Controllers} _controller
-	 */
-	setViewsForOrientation: function(_controller) {
-		if(!App.Device.orientation) {
-			return;
-		}
-		
-		// Restricted the UI for portrait and landscape orientation
-		if(App.Device.orientation == "portrait" || App.Device.orientation == "landscape") {
-			for(var view in _controller.__views) {
-				if(_controller.__views[view][App.Device.orientation] && typeof _controller.__views[view].applyProperties == "function") {
-					_controller.__views[view].applyProperties(_controller.__views[view][App.Device.orientation]);
-				} else if(_controller.__views[view].wrapper && _controller.__views[view].wrapper[App.Device.orientation] && typeof _controller.__views[view].applyProperties == "function") {
-					_controller.__views[view].applyProperties(_controller.__views[view].wrapper[App.Device.orientation]);
-				}
-			}
-		}
 	},
 	/**
 	 * Global network event handler

@@ -1,0 +1,39 @@
+"Window": {
+	layout: "vertical"
+},
+".row": {
+	backgroundColor: "#EEE",
+	height: Ti.UI.SIZE,
+	top: 10,
+	right: 0,
+	left: 0
+},
+".key": {
+	top: 20,
+	bottom: 20,
+	left: 10,
+	height: Ti.UI.SIZE,
+	width: Ti.UI.SIZE
+},
+".value": {
+	top: 20,
+	right: 10,
+	bottom: 20,
+	height: Ti.UI.SIZE,
+	width: Ti.UI.SIZE,
+	color: "#666",
+	font: {
+		fontFamily: "HelveticaNeue-UltraLightItalic"
+	},
+	textAlign: "right"
+},
+"#Submit": {
+	backgroundColor: "#AAA",
+	color: "#FFF",
+	height: 52,
+	top: 20,
+	right: 20,
+	left: 20,
+	borderRadius: 26,
+	textAlign: "center"
+}

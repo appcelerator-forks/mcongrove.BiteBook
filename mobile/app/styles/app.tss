@@ -1,7 +1,30 @@
+"TabGroup": {
+	activeTabBackgroundColor: "#404556",
+	backgroundColor: "#404556",
+	tabsBackgroundColor: "#404556",
+	activeTabIconTint: "#FFF"
+},
 "Window": {
-	backgroundColor: "#eee"
+	backgroundColor: "#FFF",
+	barColor: "#3DA0DA",
+	navTintColor: "#3DA0DA",
+	tintColor: "#3DA0DA",
+	statusBarStyle: Ti.UI.iPhone.StatusBar.LIGHT_CONTENT,
+	titleAttributes: {
+		color: "#FFF"
+	}
 },
 "Label": {
-	color: "#222",
-	font: { fontSize: 24 }
+	color: "#404556",
+	font: {
+		fontSize: 18,
+		fontFamily: "HelveticaNeue-Thin"
+	}
+},
+"Button": {
+	color: "#404556",
+	font: {
+		fontSize: 18,
+		fontFamily: "HelveticaNeue-Regular"
+	}
 }
