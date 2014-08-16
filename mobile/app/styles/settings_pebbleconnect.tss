@@ -1,6 +1,30 @@
 "Window": {
 	layout: "vertical"
 },
-"Label": {
-	
+"#Status": {
+	top: 40,
+	color: "#3DA0DA"
+},
+".container": {
+	width: 123,
+	height: 212,
+	top: 40
+},
+".pebble": {
+	width: 123,
+	height: 212,
+	top: 0,
+	left: 0,
+	image: "images/pebble.png"
+},
+"#Dots": {
+	width: 123,
+	height: 200,
+	top: 0,
+	left: 0,
+	color: "#FFF",
+	font: {
+		fontSize: 28
+	},
+	textAlign: "center"
 }

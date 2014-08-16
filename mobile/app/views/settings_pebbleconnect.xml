@@ -1,5 +1,10 @@
 <Alloy>
 	<Window id="SettingsPebbleWindow" title="Pebble">
-		<Label id="Status" text"Connecting to Pebbble" />
+		<Label id="Status" text="Connecting to Pebble" />
+		
+		<View class="container">
+			<ImageView class="pebble" />
+			<Label id="Dots" text="..." />
+		</View>
 	</Window>
 </Alloy>
