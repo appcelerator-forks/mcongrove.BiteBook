@@ -1,0 +1,12 @@
+<Alloy>
+	<TableViewRow id="Row">
+		<View class="container">
+			<View class="meta">
+				<Label id="Date" />
+				<Label id="Species" />
+			</View>
+			
+			<ImageView class="arrow" />
+		</View>
+	</TableViewRow>
+</Alloy>

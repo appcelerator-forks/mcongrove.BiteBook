@@ -1,5 +1,5 @@
 <Alloy>
 	<Window id="SettingsWindow" title="Settings">
-		
+		<TableView id="Table" />
 	</Window>
 </Alloy>

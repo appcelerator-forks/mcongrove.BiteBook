@@ -1,0 +1,41 @@
+"TableViewRow": {
+	selectionStyle: Ti.UI.iPhone.TableViewCellSelectionStyle.NONE
+},
+".container": {
+	top: 0,
+	bottom: 10,
+	backgroundColor: "#EEE",
+	layout: "vertical",
+	height: Ti.UI.SIZE
+},
+"#Species": {
+	top: 20,
+	right: 10,
+	left: 10
+},
+".stats": {
+	left: 10,
+	right: 10,
+	top: 5,
+	height: Ti.UI.SIZE,
+	bottom: 20
+},
+"#Weight": {
+	top: 0,
+	left: 0,
+	width: "50%",
+	font: {
+		fontSize: 12,
+		fontFamily: "HelveticaNeue-Bold"
+	}
+},
+"#Length": {
+	top: 0,
+	right: 0,
+	width: "50%",
+	font: {
+		fontSize: 12,
+		fontFamily: "HelveticaNeue-Bold"
+	},
+	textAlign: "right"
+}

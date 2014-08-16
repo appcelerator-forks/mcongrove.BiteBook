@@ -1,0 +1,34 @@
+"TableViewRow": {
+	selectionStyle: Ti.UI.iPhone.TableViewCellSelectionStyle.NONE
+},
+".container": {
+	top: 0,
+	bottom: 10,
+	backgroundColor: "#EEE",
+	height: Ti.UI.SIZE
+},
+".meta": {
+	layout: "vertical",
+	height: Ti.UI.SIZE
+}
+"#Date": {
+	top: 20,
+	right: 28,
+	left: 10
+},
+"#Species": {
+	top: 5,
+	right: 28,
+	left: 10,
+	bottom: 20,
+	font: {
+		fontSize: 12,
+		fontFamily: "HelveticaNeue-Bold"
+	}
+},
+".arrow": {
+	width: 8,
+	height: 13,
+	right: 10,
+	image: "images/icon_child.png"
+}

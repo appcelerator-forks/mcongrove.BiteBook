@@ -12,14 +12,12 @@
 	top: 20,
 	bottom: 20,
 	left: 10,
-	height: Ti.UI.SIZE,
 	width: Ti.UI.SIZE
 },
 ".value": {
 	top: 20,
 	right: 10,
 	bottom: 20,
-	height: Ti.UI.SIZE,
 	width: Ti.UI.SIZE,
 	color: "#666",
 	font: {
@@ -31,9 +29,8 @@
 	backgroundColor: "#AAA",
 	color: "#FFF",
 	height: 52,
-	top: 20,
-	right: 20,
-	left: 20,
-	borderRadius: 26,
+	top: 10,
+	right: 0,
+	left: 0,
 	textAlign: "center"
 }

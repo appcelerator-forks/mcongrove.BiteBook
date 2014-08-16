@@ -1,3 +1,6 @@
 "Window": {
 	layout: "vertical"
+},
+"TableView": {
+	separatorStyle: Ti.UI.iPhone.TableViewSeparatorStyle.NONE
 }

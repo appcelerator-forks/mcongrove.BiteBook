@@ -7,9 +7,10 @@
 "Window": {
 	backgroundColor: "#FFF",
 	barColor: "#3DA0DA",
-	navTintColor: "#3DA0DA",
+	navTintColor: "#FFF",
 	tintColor: "#3DA0DA",
 	statusBarStyle: Ti.UI.iPhone.StatusBar.LIGHT_CONTENT,
+	backButtonTitle: "",
 	titleAttributes: {
 		color: "#FFF"
 	}
@@ -19,7 +20,9 @@
 	font: {
 		fontSize: 18,
 		fontFamily: "HelveticaNeue-Thin"
-	}
+	},
+	textAlign: "left",
+	height: Ti.UI.SIZE
 },
 "Button": {
 	color: "#404556",
