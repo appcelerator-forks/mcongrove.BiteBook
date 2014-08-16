@@ -2,6 +2,7 @@
 	<TableViewRow id="Row">
 		<View class="container">
 			<Label id="Species" />
+			<ImageView id="Pebble" />
 		</View>
 	</TableViewRow>
 </Alloy>

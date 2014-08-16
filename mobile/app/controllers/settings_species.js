@@ -1,31 +1,28 @@
 // App bootstrap
 var App = require("core");
 
-var SPECIES;
-
-function getSpeciesMaster() {
-	var contentFile = Ti.Filesystem.getFile(Ti.Filesystem.resourcesDirectory + "data/species.json");
-
-	var content = contentFile.read();
-	
-	Ti.API.debug(JSON.parse(content.text));
-
-	return JSON.parse(content.text);
-}
-
 function init() {
-	SPECIES = getSpeciesMaster();
-	
+	var db = Ti.Database.open("BiteBook");
+	var result = db.execute("SELECT * FROM bb_species ORDER BY major ASC, minor ASC");
 	var rows = [];
 	
-	for(var i = 0, x = SPECIES.length; i < x; i++) {
-		var name = SPECIES[i].major + (SPECIES[i].minor ? ", " + SPECIES[i].minor : "");
-		var row = Alloy.createController("settings_species_row", { species: name }).getView();
+	while(result.isValidRow()) {
+		var name = result.fieldByName("major") + (result.fieldByName("minor") ? ", " + result.fieldByName("minor") : "");
+		
+		var row = Alloy.createController("settings_species_row", {
+			id: result.fieldByName("id"),
+			species: name,
+			pebble: result.fieldByName("pebble")
+		}).getView();
 		
 		rows.push(row);
+		
+		result.next();
 	}
 	
 	$.Table.setData(rows);
+	
+	result.close();
 }
 
 init();

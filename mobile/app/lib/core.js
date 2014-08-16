@@ -58,10 +58,27 @@ var App = {
 			Ti.Android.currentActivity.addEventListener("resume", App.resume);
 		}
 		
+		// Initiate the DB
+		App.setupDatabase();
+		
+		// Open the first tab
 		App.TabGroup.open();
 
 		// Get device dimensions
 		App.getDeviceDimensions();
+	},
+	/**
+	 * Sets up the databases
+	 */
+	setupDatabase: function() {
+		if(!Ti.App.Properties.getBool("DB_INSTALLED", false)) {
+			var db = Ti.Database.install("data/BiteBook.sqlite", "BiteBook");
+			db.file.setRemoteBackup(false);
+			
+			Ti.API.error(JSON.stringify(db));
+			
+			Ti.App.Properties.setBool("DB_INSTALLED", true);
+		}
 	},
 	/**
 	 * Global network event handler

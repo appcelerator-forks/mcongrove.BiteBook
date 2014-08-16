@@ -9,7 +9,12 @@
 },
 "Label": {
 	top: 20,
-	right: 28,
+	right: 42,
 	bottom: 20,
 	left: 10
+},
+"#Pebble": {
+	width: 22,
+	height: 22,
+	right: 10
 }
