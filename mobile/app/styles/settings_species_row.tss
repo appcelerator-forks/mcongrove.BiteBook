@@ -1,0 +1,15 @@
+"TableViewRow": {
+	selectionStyle: Ti.UI.iPhone.TableViewCellSelectionStyle.NONE
+},
+".container": {
+	top: 0,
+	bottom: 10,
+	backgroundColor: "#EEE",
+	height: Ti.UI.SIZE
+},
+"Label": {
+	top: 20,
+	right: 28,
+	bottom: 20,
+	left: 10
+}

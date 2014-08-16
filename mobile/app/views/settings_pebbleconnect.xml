@@ -1,0 +1,5 @@
+<Alloy>
+	<Window id="SettingsPebbleWindow" title="Pebble">
+		<Label id="Status" text"Connecting to Pebbble" />
+	</Window>
+</Alloy>
