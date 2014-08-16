@@ -1,5 +1,5 @@
 "Window": {
-	layout: "vertical"
+	
 },
 "#Status": {
 	top: 40,
@@ -7,8 +7,7 @@
 },
 ".container": {
 	width: 123,
-	height: 212,
-	top: 40
+	height: 212
 },
 ".pebble": {
 	width: 123,

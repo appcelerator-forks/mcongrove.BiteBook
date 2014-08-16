@@ -4,7 +4,7 @@
 ".row": {
 	backgroundColor: "#EEE",
 	height: Ti.UI.SIZE,
-	top: 10,
+	bottom: 10,
 	right: 0,
 	left: 0
 },
@@ -29,7 +29,7 @@
 	backgroundColor: "#AAA",
 	color: "#FFF",
 	height: 52,
-	top: 10,
+	top: 0,
 	right: 0,
 	left: 0,
 	textAlign: "center"
