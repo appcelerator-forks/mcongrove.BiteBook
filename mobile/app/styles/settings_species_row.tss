@@ -13,7 +13,7 @@
 	bottom: 20,
 	left: 10
 },
-"#Pebble": {
+"#Visible": {
 	width: 22,
 	height: 22,
 	right: 10

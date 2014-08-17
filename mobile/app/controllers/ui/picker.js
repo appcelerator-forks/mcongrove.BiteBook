@@ -1,0 +1,70 @@
+var callback;
+
+$.setOptions = function(_data) {
+	var rows = [];
+
+	for(var i = 0, x = _data.length; i < x; i++) {
+		var bgColor = _data[i].selected ? "#AA000000" : "99000000";
+
+		var row = Ti.UI.createTableViewRow({
+			title: _data[i].title,
+			value: _data[i].value,
+			height: 48,
+			backgroundColor: bgColor,
+			selectedBackgroundColor: "#99000000",
+			backgroundSelectedColor: "#99000000",
+			backgroundFocusedColor: "#99000000",
+			color: "#FFF",
+		});
+
+		rows.push(row);
+	}
+
+	$.Table.setData(rows);
+};
+
+$.setCallback = function(_callback) {
+	callback = _callback;
+};
+
+$.open = function() {
+	var animation = Ti.UI.createAnimation({
+		opacity: 1,
+		duration: 250
+	});
+
+	animation.addEventListener("complete", function onComplete() {
+		$.Table.opacity = 1;
+
+		animation.removeEventListener("complete", onComplete);
+	});
+
+	$.Table.animate(animation);
+};
+
+$.close = function(_callback) {
+	var animation = Ti.UI.createAnimation({
+		opacity: 0,
+		duration: 250
+	});
+
+	animation.addEventListener("complete", function onComplete() {
+		$.Table.opacity = 0;
+
+		_callback();
+
+		animation.removeEventListener("complete", onComplete);
+	});
+
+	$.Table.animate(animation);
+};
+
+$.Wrapper.addEventListener("click", function(_event) {
+	$.close(callback(false));
+});
+
+$.Table.addEventListener("click", function(_event) {
+	$.close(function() {
+		callback(_event.rowData.value);
+	});
+});

@@ -1,67 +1,18 @@
 // App bootstrap
 var App = require("core");
 
-var DATA = [
-	{
-		date: "August 9th, 2014",
-		species: "Bass, Largemouth (2)"
-	},
-	{
-		date: "August 8th, 2014",
-		species: "Bass, Largemouth (1) Catfish (1)"
-	},
-	{
-		date: "August 9th, 2014",
-		species: "Bass, Largemouth (2)"
-	},
-	{
-		date: "August 8th, 2014",
-		species: "Bass, Largemouth (1) Catfish (1)"
-	},
-	{
-		date: "August 9th, 2014",
-		species: "Bass, Largemouth (2)"
-	},
-	{
-		date: "August 8th, 2014",
-		species: "Bass, Largemouth (1) Catfish (1)"
-	},
-	{
-		date: "August 9th, 2014",
-		species: "Bass, Largemouth (2)"
-	},
-	{
-		date: "August 8th, 2014",
-		species: "Bass, Largemouth (1) Catfish (1)"
-	},
-	{
-		date: "August 9th, 2014",
-		species: "Bass, Largemouth (2)"
-	},
-	{
-		date: "August 8th, 2014",
-		species: "Bass, Largemouth (1) Catfish (1)"
-	},
-	{
-		date: "August 9th, 2014",
-		species: "Bass, Largemouth (2)"
-	},
-	{
-		date: "August 8th, 2014",
-		species: "Bass, Largemouth (1) Catfish (1)"
-	}
-];
-
 function init() {
+	var trips = App.Database.getAllTrips();
+	
 	var rows = [];
 	
-	for(var i = 0, x = DATA.length; i < x; i++) {
-		var row = Alloy.createController("logbook_row", DATA[i]).getView();
+	for(var i = 0, x = trips.length; i < x; i++) {
+		var row = Alloy.createController("logbook_row", trips[i]).getView();
 		
-		row.addEventListener("click", function() {
-			var detail = Alloy.createController("logbook_catch", { id: i }).getView();
+		row.addEventListener("click", function(_event) {
+			var trip = Alloy.createController("logbook_catch", { id: _event.row.trip_id }).getView();
 			
-			App.TabGroup.activeTab.open(detail);
+			App.TabGroup.activeTab.open(trip);
 		});
 		
 		rows.push(row);
@@ -70,4 +21,4 @@ function init() {
 	$.Table.setData(rows);
 }
 
-init();
+$.LogbookWindow.addEventListener("focus", init);

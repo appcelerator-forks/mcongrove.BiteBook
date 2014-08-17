@@ -1,4 +1,4 @@
-"Window": {
+".container": {
 	layout: "vertical"
 },
 ".row": {

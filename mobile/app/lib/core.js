@@ -42,6 +42,7 @@ var App = {
 	 * @type {Object}
 	 */
 	TabGroup: null,
+	Database: require("database"),
 	/**
 	 * Sets up the app singleton and all it's child dependencies.
 	 * **NOTE: This should only be fired in index controller file and only once.**
@@ -57,28 +58,12 @@ var App = {
 		if(OS_ANDROID) {
 			Ti.Android.currentActivity.addEventListener("resume", App.resume);
 		}
-		
-		// Initiate the DB
-		App.setupDatabase();
-		
-		// Open the first tab
-		App.TabGroup.open();
 
 		// Get device dimensions
 		App.getDeviceDimensions();
-	},
-	/**
-	 * Sets up the databases
-	 */
-	setupDatabase: function() {
-		if(!Ti.App.Properties.getBool("DB_INSTALLED", false)) {
-			var db = Ti.Database.install("data/BiteBook.sqlite", "BiteBook");
-			db.file.setRemoteBackup(false);
-			
-			Ti.API.error(JSON.stringify(db));
-			
-			Ti.App.Properties.setBool("DB_INSTALLED", true);
-		}
+		
+		// Open the first tab
+		App.TabGroup.open();
 	},
 	/**
 	 * Global network event handler

@@ -1,31 +1,34 @@
+// App bootstrap
+var App = require("core");
+
 var args = arguments[0] || {};
 
 function init() {
-	$.Species.text = args.species;
+	$.Species.text = args.name;
 	
-	if(args.pebble) {
-		$.Pebble.image = "images/icon_yes.png";
+	if(args.visible) {
+		$.Visible.image = "images/icon_yes.png";
 	} else {
-		$.Pebble.image = "images/icon_no.png";
+		$.Visible.image = "images/icon_no.png";
 	}
 }
 
-function togglePebble() {
+function toggleVisibility() {
 	var db = Ti.Database.open("BiteBook");
 	
-	if(args.pebble) {
-		$.Pebble.image = "images/icon_no.png";
-		args.pebble = 0;
+	if(args.visible) {
+		$.Visible.image = "images/icon_no.png";
+		args.visible = 0;
 		
-		db.execute("UPDATE bb_species SET pebble=? WHERE id=?", 0, args.id);
+		App.Database.setSpeciesVisibility(args.id, 0);
 	} else {
-		$.Pebble.image = "images/icon_yes.png";
-		args.pebble = 1;
+		$.Visible.image = "images/icon_yes.png";
+		args.visible = 1;
 		
-		db.execute("UPDATE bb_species SET pebble=? WHERE id=?", 1, args.id);
+		App.Database.setSpeciesVisibility(args.id, 1);
 	}
 }
 
 init();
 
-$.Row.addEventListener("click", togglePebble);
+$.Row.addEventListener("click", toggleVisibility);
