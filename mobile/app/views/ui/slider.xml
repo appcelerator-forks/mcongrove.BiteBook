@@ -1,0 +1,15 @@
+<Alloy>
+	<View id="Wrapper">
+		<View id="Top">
+			<Label id="ValueTop" />
+		</View>
+		
+		<View id="Bottom">
+			<Label id="ValueBottom" />
+		</View>
+		
+		<View id="SubmitContainer">
+			<Button id="Submit" title="Continue" />
+		</View>
+	</View>
+</Alloy>

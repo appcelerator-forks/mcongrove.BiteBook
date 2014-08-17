@@ -1,5 +1,5 @@
 <Alloy>
-	<Window id="LogWindow" title="Log Fish">
+	<Window id="LogWindow" title="Log a Fish">
 		<View class="container">
 			<View class="row" id="RowSpecies">
 				<Label class="key" text="Species" />

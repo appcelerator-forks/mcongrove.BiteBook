@@ -1,8 +1,6 @@
 var DB = Ti.Database.open("BiteBook");
 
 exports.createTrip = function() {
-	Ti.API.warn("createTrip");
-	
 	DB.execute("INSERT INTO bb_trip (start) VALUES (?)", Math.round(new Date().getTime() / 1000));
 	
 	var result = DB.execute("SELECT id FROM bb_trip ORDER BY id DESC LIMIT 1");
@@ -21,8 +19,6 @@ exports.createTrip = function() {
 };
 
 exports.endTrip = function(_trip_id) {
-	Ti.API.warn("endTrip");
-	
 	if(typeof _trip_id == "undefined") {
 		_trip_id = exports.getValidTripId();
 	}
@@ -31,8 +27,6 @@ exports.endTrip = function(_trip_id) {
 };
 
 exports.getValidTripId = function() {
-	Ti.API.warn("getValidTripId");
-	
 	var result = DB.execute("SELECT id, start FROM bb_trip ORDER BY start DESC LIMIT 1");
 	
 	var trip_id,
@@ -85,8 +79,6 @@ exports.getAllTrips = function() {
 };
 
 exports.getTrip = function(_trip_id) {
-	Ti.API.warn("getTrip");
-	
 	var result = DB.execute("SELECT * FROM bb_trip WHERE id = ? LIMIT 1", _trip_id);
 	var trip;
 	
@@ -105,9 +97,7 @@ exports.getTrip = function(_trip_id) {
 	return trip;
 };
 
-exports.addCatch = function(_species, _weight, _length) {
-	Ti.API.warn("addCatch");
-	
+exports.addCatch = function(_catch) {
 	var trip_id = exports.getValidTripId();
 	
 	var geolocation = {};
@@ -128,9 +118,9 @@ exports.addCatch = function(_species, _weight, _length) {
 			DB.execute("INSERT INTO bb_log (timestamp, trip_id, species, weight, length, geo) VALUES (?, ?, ?, ?, ?, ?)",
 				Math.round(new Date().getTime() / 1000),
 				trip_id,
-				_species,
-				JSON.stringify(_weight),
-				JSON.stringify(_length),
+				_catch.species,
+				JSON.stringify(_catch.weight),
+				JSON.stringify(_catch.length),
 				JSON.stringify(geolocation)
 			);
 		});
@@ -202,7 +192,7 @@ exports.getSpeciesByTrip = function(_trid_id) {
 		species_string_bits.push(exports.getSpeciesById(key) + " (" + species[key] + ")");
 	}
 	
-	return species_string_bits.join(", ");
+	return species_string_bits.join(" • ");
 };
 
 exports.getAllSpecies = function() {
@@ -269,8 +259,6 @@ exports.populate = function() {
 	}
 	
 	DB.file.setRemoteBackup(false);
-	
-	Ti.API.info("Pre-populating Database");
 	
 	DB.execute("DROP TABLE IF EXISTS bb_log");
 	DB.execute("DROP TABLE IF EXISTS bb_trip");

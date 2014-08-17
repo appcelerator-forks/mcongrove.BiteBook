@@ -9,7 +9,6 @@ var TRIP, CATCHES;
 
 function init() {
 	TRIP = App.Database.getTrip(args.id);
-	Ti.API.warn(JSON.stringify(TRIP));
 	CATCHES = App.Database.getCatchesByTrip(TRIP.id);
 	
 	var date = Moment.unix(TRIP.start);

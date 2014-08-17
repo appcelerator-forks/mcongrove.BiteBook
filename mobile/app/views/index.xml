@@ -1,6 +1,6 @@
 <Alloy>
 	<TabGroup id="TabGroup">
-		<Tab id="TabLog" title="Log Fish" icon="images/icon_log.png">
+		<Tab id="TabLog" title="Log a Fish" icon="images/icon_log.png">
 			<Require type="view" src="log" />
 		</Tab>
 		<Tab id="TabLogbook" title="Logbook" icon="images/icon_logbook.png">

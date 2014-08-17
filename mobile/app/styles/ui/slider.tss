@@ -1,0 +1,42 @@
+"#Wrapper": {
+	top: 0,
+	left: 0,
+	opacity: 0,
+	height: Ti.UI.FILL,
+	width: Ti.UI.FILL,
+	backgroundColor: "#DD000000",
+	layout: "vertical"
+},
+"#Top": {
+	top: 0,
+	width: Ti.UI.FILL,
+	height: "40%",
+	bubbleParent: false
+},
+"#Bottom": {
+	top: 0,
+	width: Ti.UI.FILL,
+	height: "40%",
+	bubbleParent: false
+},
+"#SubmitContainer": {
+	top: 0,
+	width: Ti.UI.FILL,
+	height: "20%",
+	bubbleParent: false
+},
+"Label": {
+	color: "#FFF",
+	font: {
+		fontSize: 40,
+		fontFamily: "HelveticaNeue-Bold"
+	}
+},
+"#Submit": {
+	backgroundColor: "#AAA",
+	color: "#FFF",
+	height: 52,
+	right: 0,
+	left: 0,
+	textAlign: "center"
+}

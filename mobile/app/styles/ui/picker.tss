@@ -1,13 +1,13 @@
 "#Wrapper": {
 	top: 0,
 	left: 0,
+	opacity: 0,
 	height: Ti.UI.FILL,
 	width: Ti.UI.FILL,
 	backgroundColor: "#CC000000"
 },
 "#Table": {
 	top: 0,
-	opacity: 0,
 	width: Ti.UI.FILL,
 	height: Ti.UI.FILL,
 	backgroundColor: "transparent",

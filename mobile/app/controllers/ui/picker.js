@@ -34,12 +34,12 @@ $.open = function() {
 	});
 
 	animation.addEventListener("complete", function onComplete() {
-		$.Table.opacity = 1;
+		$.Wrapper.opacity = 1;
 
 		animation.removeEventListener("complete", onComplete);
 	});
 
-	$.Table.animate(animation);
+	$.Wrapper.animate(animation);
 };
 
 $.close = function(_callback) {
@@ -49,14 +49,14 @@ $.close = function(_callback) {
 	});
 
 	animation.addEventListener("complete", function onComplete() {
-		$.Table.opacity = 0;
+		$.Wrapper.opacity = 0;
 
 		_callback();
 
 		animation.removeEventListener("complete", onComplete);
 	});
 
-	$.Table.animate(animation);
+	$.Wrapper.animate(animation);
 };
 
 $.Wrapper.addEventListener("click", function(_event) {
