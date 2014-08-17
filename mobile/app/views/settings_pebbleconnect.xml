@@ -3,7 +3,7 @@
 		<Label id="Status" text="Connecting to Pebble" />
 		
 		<View class="container">
-			<ImageView class="pebble" />
+			<ImageView id="Pebble" />
 			<Label id="Dots" text="..." />
 		</View>
 	</Window>

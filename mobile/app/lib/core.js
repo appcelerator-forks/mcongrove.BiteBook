@@ -42,7 +42,14 @@ var App = {
 	 * @type {Object}
 	 */
 	TabGroup: null,
+	/**
+	 * Database model file
+	 */
 	Database: require("database"),
+	/**
+	 * Pebble module
+	 */
+	Pebble: require("org.beuckman.tipebble"),
 	/**
 	 * Sets up the app singleton and all it's child dependencies.
 	 * **NOTE: This should only be fired in index controller file and only once.**
@@ -58,6 +65,9 @@ var App = {
 		if(OS_ANDROID) {
 			Ti.Android.currentActivity.addEventListener("resume", App.resume);
 		}
+		
+		// Set Pebble application UUID
+		App.Pebble.setAppUUID("226834ae-786e-4302-a52f-6e7efc9f990b");
 
 		// Get device dimensions
 		App.getDeviceDimensions();

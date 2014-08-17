@@ -13,53 +13,72 @@ function init() {
 			$.Dots.text = $.Dots.text + ".";
 		}
 	}, 500);
+	
+	App.Pebble.getVersionInfo({
+		success: function(_event) {
+			watchConnected();
+			launchApp();
+		},
+		error: function(_event) {
+		   watchDisonnected();
+		}
+	});
 }
 
-init();
-
-
-
-
-
-
-
-/*
-var Pebble = require("org.beuckman.tipebble");
-
-Pebble.setAppUUID("XXX-XXX-XXXX");
-
-function watchConnected(e) {
+function watchConnected(_event) {
 	$.Status.text = "Connected";
 	
 	clearInterval(interval);
+	$.Dots.text = "✓";
 }
 
-function watchDisonnected(e) {
+function watchDisonnected(_event) {
 	$.Status.text = "Disconnected";
+	
+	clearInterval(interval);
+	$.Dots.text = "✗";
 }
 
-Pebble.addEventListener("watchConnected", watchConnected);
-Pebble.addEventListener("watchDisconnected", watchDisonnected);
+App.Pebble.addEventListener("watchConnected", watchConnected);
+App.Pebble.addEventListener("watchDisconnected", watchDisonnected);
 
 function launchApp() {
-	Pebble.launchApp({
-		success: function(e) {
+	App.Pebble.launchApp({
+		success: function(_event) {
 			$.Status.text = "Application Launched";
 		},
-		error: function(e) {
+		error: function(_event) {
 			$.Status.text = "Could Not Launch";
 		}
 	});
 }
 
 function killApp() {
-	Pebble.killApp({
-		success: function(e) {
+	App.Pebble.killApp({
+		success: function(_event) {
 			$.Status.text = "Application Closed";
 		},
-		error: function(e) {
+		error: function(_event) {
 			$.Status.text = "Could Not Close";
 		}
 	});
 }
-*/
+
+function sendMessage() {
+	App.Pebble.sendMessage({
+		message: {
+			0: 123,
+			1: "TiPebble"
+		},
+		success: function(_event) {
+			Ti.API.info(_event);
+		},
+		error : function(_event) {
+			Ti.API.error(_event);
+		}
+	});
+}
+
+init();
+
+$.Pebble.addEventListener("click", sendMessage);

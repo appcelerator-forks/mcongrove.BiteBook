@@ -168,6 +168,6 @@ $.Submit.addEventListener("click", function(_event) {
 	}
 });
 
-$.ValueSpecies.addEventListener("click", openPickerSpecies);
-$.ValueWeight.addEventListener("click", openSliderWeight);
-$.ValueLength.addEventListener("click", openSliderLength);
+$.RowSpecies.addEventListener("click", openPickerSpecies);
+$.RowWeight.addEventListener("click", openSliderWeight);
+$.RowLength.addEventListener("click", openSliderLength);

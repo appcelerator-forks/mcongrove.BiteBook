@@ -9,7 +9,7 @@
 	width: 123,
 	height: 212
 },
-".pebble": {
+"#Pebble": {
 	width: 123,
 	height: 212,
 	top: 0,
