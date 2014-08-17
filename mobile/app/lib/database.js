@@ -84,13 +84,14 @@ exports.getAllTrips = function() {
 	return trips;
 };
 
-exports.getTrip = function(_id) {
+exports.getTrip = function(_trip_id) {
 	Ti.API.warn("getTrip");
 	
-	var result = DB.execute("SELECT * FROM bb_trip WHERE id = ? LIMIT 1", _id);
+	var result = DB.execute("SELECT * FROM bb_trip WHERE id = ? LIMIT 1", _trip_id);
+	var trip;
 	
 	while(result.isValidRow()) {
-		var trip = {
+		trip = {
 			id: result.fieldByName("id"),
 			start: result.fieldByName("start"),
 			end: result.fieldByName("end")
@@ -138,8 +139,8 @@ exports.addCatch = function(_species, _weight, _length) {
 	}
 };
 
-exports.getCatch = function(_id) {
-	var result = DB.execute("SELECT * FROM bb_log WHERE id = ? LIMIT 1", _id);
+exports.getCatch = function(_catch_id) {
+	var result = DB.execute("SELECT * FROM bb_log WHERE id = ? LIMIT 1", _catch_id);
 	
 	while(result.isValidRow()) {
 		var _catch = {
@@ -161,7 +162,7 @@ exports.getCatch = function(_id) {
 };
 
 exports.getCatchesByTrip = function(_trip_id) {
-	var result = DB.execute("SELECT * FROM bb_log WHERE trip_id = ? ORDER BY timestamp DESC", _id);
+	var result = DB.execute("SELECT * FROM bb_log WHERE trip_id = ? ORDER BY timestamp DESC", _trip_id);
 	
 	var catches = [];
 	
@@ -243,8 +244,8 @@ exports.getVisibleSpecies = function() {
 	return species;
 };
 
-exports.getSpeciesById = function(_id) {
-	var result = DB.execute("SELECT * FROM bb_species WHERE id = ? LIMIT 1", _id);
+exports.getSpeciesById = function(_species_id) {
+	var result = DB.execute("SELECT * FROM bb_species WHERE id = ? LIMIT 1", _species_id);
 	var name;
 	
 	while(result.isValidRow()) {
@@ -258,8 +259,8 @@ exports.getSpeciesById = function(_id) {
 	return name;
 };
 
-exports.setSpeciesVisibility = function(_id, _visible) {
-	DB.execute("UPDATE bb_species SET visible = ? WHERE id = ?", _visible, _id);
+exports.setSpeciesVisibility = function(_species_id, _visible) {
+	DB.execute("UPDATE bb_species SET visible = ? WHERE id = ?", _visible, _species_id);
 };
 
 exports.populate = function() {
