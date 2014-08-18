@@ -108,21 +108,24 @@ exports.addCatch = function(_catch) {
 		Ti.Geolocation.distanceFilter = 15;
 		Ti.Geolocation.preferredProvider = Ti.Geolocation.PROVIDER_GPS;
 		
-		Titanium.Geolocation.getCurrentPosition(function(_event) {
+		Ti.Geolocation.getCurrentPosition(function(_event) {
 			if(_event.error) {
 				Ti.API.error(_event.error);
 			} else {
 				geolocation = _event.coords;
 			}
 			
-			DB.execute("INSERT INTO bb_log (timestamp, trip_id, species, weight, length, geo) VALUES (?, ?, ?, ?, ?, ?)",
+			DB.execute("INSERT INTO bb_log (timestamp, trip_id, species, weight, length, latitude, longitude) VALUES (?, ?, ?, ?, ?, ?, ?)",
 				Math.round(new Date().getTime() / 1000),
 				trip_id,
 				_catch.species,
 				JSON.stringify(_catch.weight),
 				JSON.stringify(_catch.length),
-				JSON.stringify(geolocation)
+				geolocation.latitude,
+				geolocation.longitude
 			);
+			
+			Ti.App.fireEvent("BB_CATCH");
 		});
 	} else {
 		alert("Please turn on location services");
@@ -140,7 +143,8 @@ exports.getCatch = function(_catch_id) {
 			species: result.fieldByName("species"),
 			weight: JSON.parse(result.fieldByName("weight")),
 			length: JSON.parse(result.fieldByName("length")),
-			geo: JSON.parse(result.fieldByName("geo"))
+			latitude: result.fieldByName("latitude"),
+			longitude: result.fieldByName("longitude")
 		};
 		
 		result.next();
@@ -162,7 +166,8 @@ exports.getCatchesByTrip = function(_trip_id) {
 			species: result.fieldByName("species"),
 			weight: JSON.parse(result.fieldByName("weight")),
 			length: JSON.parse(result.fieldByName("length")),
-			geo: JSON.parse(result.fieldByName("geo"))
+			latitude: result.fieldByName("latitude"),
+			longitude: result.fieldByName("longitude")
 		};
 		
 		catches.push(_catch);
@@ -253,6 +258,46 @@ exports.setSpeciesVisibility = function(_species_id, _visible) {
 	DB.execute("UPDATE bb_species SET visible = ? WHERE id = ?", _visible, _species_id);
 };
 
+exports.getTripCatchCount = function() {
+	var trip_id = exports.getValidTripId();
+	var result = DB.execute("SELECT id FROM bb_log WHERE trip_id = ? ORDER BY timestamp DESC", trip_id);
+	
+	var catches = [];
+	
+	while(result.isValidRow()) {
+		var _catch = {
+			id: result.fieldByName("id")
+		};
+		
+		catches.push(_catch);
+		result.next();
+	}
+	
+	result.close;
+	
+	return catches.length;
+};
+
+exports.getLocationCatchCount = function(_geo) {
+	// 0.001 = 316.8ft
+	var result = DB.execute("SELECT id FROM bb_log WHERE latitude < " + (_geo.latitude + 0.001) + " AND latitude > " + (_geo.latitude - 0.001) + " AND longitude < " + (_geo.longitude + 0.001) + " AND longitude > " + (_geo.longitude - 0.001) + " LIMIT 100");
+	
+	var catches = [];
+	
+	while(result.isValidRow()) {
+		var _catch = {
+			id: result.fieldByName("id")
+		};
+		
+		catches.push(_catch);
+		result.next();
+	}
+	
+	result.close;
+	
+	return catches.length;
+};
+
 exports.populate = function() {
 	if(Ti.App.Properties.getBool("DB_INSTALLED", false)) {
 		return;
@@ -263,7 +308,7 @@ exports.populate = function() {
 	DB.execute("DROP TABLE IF EXISTS bb_log");
 	DB.execute("DROP TABLE IF EXISTS bb_trip");
 	DB.execute("DROP TABLE IF EXISTS bb_species");
-	DB.execute("CREATE TABLE bb_log (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE, timestamp INTEGER NOT NULL, trip_id INTEGER NOT NULL, species INTEGER NOT NULL, weight BLOB, length BLOB, geo BLOB)");
+	DB.execute("CREATE TABLE bb_log (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE, timestamp INTEGER NOT NULL, trip_id INTEGER NOT NULL, species INTEGER NOT NULL, weight BLOB, length BLOB, latitude INTEGER, longitude INTEGER)");
 	DB.execute("CREATE TABLE bb_trip (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE, start INTEGER NOT NULL, end INTEGER DEFAULT (0) )");
 	DB.execute("CREATE TABLE bb_species (id INTEGER PRIMARY KEY NOT NULL UNIQUE, name TEXT NOT NULL, visible INTEGER NOT NULL DEFAULT (0))");
 	DB.execute("BEGIN TRANSACTION");

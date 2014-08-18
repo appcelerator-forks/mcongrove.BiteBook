@@ -49,7 +49,14 @@ var App = {
 	/**
 	 * Pebble module
 	 */
-	Pebble: require("org.beuckman.tipebble"),
+	Pebble: require("pebble"),
+	/**
+	 * Geo coordinates
+	 */
+	Geo: {
+		latitude: null,
+		longitude: null
+	},
 	/**
 	 * Sets up the app singleton and all it's child dependencies.
 	 * **NOTE: This should only be fired in index controller file and only once.**
@@ -61,19 +68,57 @@ var App = {
 		Ti.App.addEventListener("close", App.exit);
 		Ti.App.addEventListener("resumed", App.resume);
 		Ti.Gesture.addEventListener("orientationchange", App.orientationChange);
+		Ti.App.addEventListener("BB_CATCH", App.updateCatchCounts);
 
 		if(OS_ANDROID) {
 			Ti.Android.currentActivity.addEventListener("resume", App.resume);
 		}
 		
-		// Set Pebble application UUID
-		App.Pebble.setAppUUID("226834ae-786e-4302-a52f-6e7efc9f990b");
+		if(Ti.Geolocation.locationServicesEnabled) {
+			Ti.Geolocation.purpose = "Catch Geolocation Logging";
+			Ti.Geolocation.accuracy = Ti.Geolocation.ACCURACY_BEST;
+			Ti.Geolocation.distanceFilter = 95;
+			Ti.Geolocation.preferredProvider = Ti.Geolocation.PROVIDER_GPS;
+			
+			Ti.Geolocation.addEventListener("location", function(_event) {
+				if(_event.error) {
+					Ti.API.error(_event.error);
+				} else {
+					App.Geo = _event.coords;
+				}
+			});
+			
+			Ti.Geolocation.getCurrentPosition(function(_event) {
+				if(_event.error) {
+					Ti.API.error(_event.error);
+				} else {
+					App.Geo = _event.coords;
+				}
+			});
+		}
 
 		// Get device dimensions
 		App.getDeviceDimensions();
 		
 		// Open the first tab
 		App.TabGroup.open();
+	},
+	/**
+	 * Handles when a catch has been logged
+	 */
+	updateCatchCounts: function(_event) {
+		App.Pebble.sendMessage({
+			message: {
+				0: App.Database.getTripCatchCount(),
+				1: App.Database.getLocationCatchCount(App.Geo)
+			},
+			success: function(_event) {
+				Ti.API.debug(_event);
+			},
+			error : function(_event) {
+				Ti.API.error(_event);
+			}
+		});
 	},
 	/**
 	 * Global network event handler
