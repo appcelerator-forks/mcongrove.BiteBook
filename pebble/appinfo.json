@@ -1,5 +1,5 @@
 {
-	"uuid": "226834ae-786e-4302-a52f-6e7efc9f990b",
+	"uuid": "4e212afd-b33e-440e-b20b-7f2c3fafc5ea",
 	"shortName": "BiteBook",
 	"longName": "BiteBook",
 	"companyName": "Matthew Congrove",
@@ -29,6 +29,16 @@
 				"type": "png",
 				"name": "ICON_FISH_WHITE",
 				"file": "images/icon_fish.png"
+			},
+			{
+				"type": "png",
+				"name": "ICON_ARROW_UP_WHITE",
+				"file": "images/icon_arrow_up.png"
+			},
+			{
+				"type": "png",
+				"name": "ICON_ARROW_DOWN_WHITE",
+				"file": "images/icon_arrow_down.png"
 			}
 		]
 	}

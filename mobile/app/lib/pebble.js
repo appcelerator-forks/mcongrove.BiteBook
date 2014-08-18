@@ -1,6 +1,6 @@
 var Pebble = require("org.beuckman.tipebble");
 
-Pebble.setAppUUID("226834ae-786e-4302-a52f-6e7efc9f990b");
+Pebble.setAppUUID("4e212afd-b33e-440e-b20b-7f2c3fafc5ea");
 
 exports.connected = false;
 
