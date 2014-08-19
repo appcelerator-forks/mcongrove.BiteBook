@@ -104,19 +104,21 @@ var App = {
 		App.TabGroup.open();
 	},
 	/**
+	 * Opens the settings screen
+	 */
+	openSettings: function() {
+		var settings = Alloy.createController("settings").getView();
+		
+		App.TabGroup.activeTab.open(settings);
+	},
+	/**
 	 * Handles when a catch has been logged
 	 */
 	updateCatchCounts: function(_event) {
 		App.Pebble.sendMessage({
 			message: {
-				0: App.Database.getTripCatchCount(),
-				1: App.Database.getLocationCatchCount(App.Geo)
-			},
-			success: function(_event) {
-				Ti.API.debug(_event);
-			},
-			error : function(_event) {
-				Ti.API.error(_event);
+				0: App.Database.catchGetCountByTrip(),
+				1: App.Database.catchGetCountByLocation(App.Geo)
 			}
 		});
 	},

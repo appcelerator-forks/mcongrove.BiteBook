@@ -8,8 +8,8 @@ var args = arguments[0] || {};
 var TRIP, CATCHES;
 
 function init() {
-	TRIP = App.Database.getTrip(args.id);
-	CATCHES = App.Database.getCatchesByTrip(TRIP.id);
+	TRIP = App.Database.tripGetById(args.id);
+	CATCHES = App.Database.catchGetByTripId(TRIP.id);
 	
 	var date = Moment.unix(TRIP.start);
 	var rows = [];
@@ -21,20 +21,20 @@ function init() {
 	for(var i = 0, x = CATCHES.length; i < x; i++) {
 		var _catch = CATCHES[i];
 		
-		_catch.species = App.Database.getSpeciesById(_catch.species);
+		_catch.species = App.Database.speciesGetById(_catch.species);
 		
 		if(i == 0) {
 			$.Map.setRegion({
-				latitude: _catch.geo.latitude,
-				longitude: _catch.geo.longitude,
+				latitude: _catch.latitude,
+				longitude: _catch.longitude,
 				latitudeDelta: 0.01,
 				longitudeDelta: 0.01
 			});
 		}
 		
 		var item = Alloy.Globals.Map.createAnnotation({
-			latitude: _catch.geo.latitude,
-			longitude: _catch.geo.longitude,
+			latitude: _catch.latitude,
+			longitude: _catch.longitude,
 			title: _catch.species,
 			subtitle: _catch.weight.pound + " lb " + _catch.weight.ounce + " oz",
 			image: "images/icon_annotation.png"

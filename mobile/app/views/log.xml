@@ -1,5 +1,9 @@
 <Alloy>
 	<Window id="LogWindow" title="Log a Fish">
+		<RightNavButton>
+			<Button image="images/icon_settings.png" onClick="App.openSettings" />
+		</RightNavButton>
+		
 		<View class="container">
 			<View class="row" id="RowSpecies">
 				<Label class="key" text="Species" />

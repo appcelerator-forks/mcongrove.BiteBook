@@ -2,7 +2,7 @@
 var App = require("core");
 
 function init() {
-	var trips = App.Database.getAllTrips();
+	var trips = App.Database.tripGetAll();
 	
 	var rows = [];
 	

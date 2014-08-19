@@ -1,5 +1,9 @@
 <Alloy>
 	<Window id="LogbookWindow" title="Logbook">
+		<RightNavButton>
+			<Button image="images/icon_settings.png" onClick="App.openSettings" />
+		</RightNavButton>
+		
 		<TableView id="Table" />
 	</Window>
 </Alloy>

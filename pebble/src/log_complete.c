@@ -21,7 +21,7 @@ static char lengthText[15];
 static char feetText[4];
 static char inchText[4];
 
-static char LOG_SPECIES_ID[2];
+static char LOG_SPECIES_ID[4];
 static char LOG_SPECIES[10];
 static int LOG_POUND = 0;
 static int LOG_OUNCE = 0;
@@ -90,7 +90,7 @@ static void handle_window_unload(Window* window) {
 
 static void set_species() {
 	if (persist_exists(KEY_LOG_SPECIES)) {
-		persist_read_string(KEY_LOG_SPECIES, LOG_SPECIES_ID, 2);
+		persist_read_string(KEY_LOG_SPECIES, LOG_SPECIES_ID, 4);
 	}
 	
 	if (persist_exists(KEY_LOG_SPECIES_NAME)) {
@@ -140,6 +140,36 @@ static void set_length() {
 	text_layer_set_text(s_text_length, lengthText);
 }
 
+/** App Comms **/
+
+static void send_to_phone() {	
+	DictionaryIterator *iter;
+	app_message_outbox_begin(&iter);
+	
+	if(iter == NULL) {
+		return;
+	}
+	
+	static char JSON[64];
+	
+	strcpy(JSON, "{\"S\":");
+	strcat(JSON, LOG_SPECIES_ID);
+	strcat(JSON, ",\"WP\":");
+	strcat(JSON, poundText);
+	strcat(JSON, ",\"WO\":");
+	strcat(JSON, ounceText);
+	strcat(JSON, ",\"LF\":");
+	strcat(JSON, feetText);
+	strcat(JSON, ",\"LI\":");
+	strcat(JSON, inchText);
+	strcat(JSON, "}");
+	
+	dict_write_cstring(iter, 0, JSON);
+	dict_write_end(iter);
+	
+	app_message_outbox_send();
+}
+
 /** Event Handlers **/
 
 static void timer_callback(void *data) {
@@ -164,6 +194,8 @@ void show_log_complete(void) {
 	set_species();
 	set_weight();
 	set_length();
+	
+	send_to_phone();
 	
 	s_timer = app_timer_register(3000, timer_callback, NULL);
 }

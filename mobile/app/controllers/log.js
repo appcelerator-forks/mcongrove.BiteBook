@@ -16,7 +16,7 @@ var VALUES = {
 function openPickerSpecies() {
 	var picker = Alloy.createController("ui/picker");
 	var options = [];
-	var species = App.Database.getVisibleSpecies();
+	var species = App.Database.speciesGetVisible();
 	
 	for(var i = 0, x = species.length; i < x; i++) {
 		options.push({
@@ -29,7 +29,7 @@ function openPickerSpecies() {
 	
 	picker.setCallback(function(_data) {
 		if(_data !== false) {
-			$.ValueSpecies.text = App.Database.getSpeciesById(_data);
+			$.ValueSpecies.text = App.Database.speciesGetById(_data);
 			$.ValueSpecies.color = "#404556";
 			$.ValueSpecies.font = {
 				fontSize: 18,
@@ -129,7 +129,13 @@ function openSliderLength() {
 
 $.Submit.addEventListener("click", function(_event) {
 	if(VALUES.species !== null) {
-		App.Database.addCatch(VALUES);
+		App.Database.catchAdd(VALUES);
+		
+		Alloy.createWidget("com.mcongrove.toast", null, {
+			text: "Catch Logged",
+			duration: 2000,
+			view: $.LogWindow
+		});
 		
 		VALUES = {
 			species: null,

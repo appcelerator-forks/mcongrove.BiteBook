@@ -7,7 +7,9 @@ exports.connected = false;
 exports.connect = function(_data) {
 	Ti.API.info("@Pebble connect");
 	
-	launchApp(_data ? _data : null);
+	if(!exports.connected) {
+		launchApp(_data ? _data : null);
+	}
 };
 
 exports.sendMessage = function(_data) {
@@ -36,8 +38,8 @@ function watchConnected(_event) {
 	exports.connected = true;
 }
 
-function watchDisonnected(_event) {
-	Ti.API.info("@Pebble watchDisonnected");
+function watchDisconnected(_event) {
+	Ti.API.info("@Pebble watchDisconnected");
 	
 	exports.connected = false;
 }
@@ -81,9 +83,9 @@ function killApp(_data) {
 }
 
 function receiveMessage(_data) {
-	Ti.API.warn(JSON.stringify(_data));
+	Ti.API.warn(JSON.stringify(JSON.parse(_data.message)));
 }
 
 Pebble.addEventListener("watchConnected", watchConnected);
-Pebble.addEventListener("watchDisconnected", watchDisonnected);
+Pebble.addEventListener("watchDisconnected", watchDisconnected);
 Pebble.addEventListener("update", receiveMessage);

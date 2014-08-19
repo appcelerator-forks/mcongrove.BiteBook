@@ -1,32 +1,26 @@
 var DB = Ti.Database.open("BiteBook");
 
-exports.createTrip = function() {
+exports.tripAdd = function() {
 	DB.execute("INSERT INTO bb_trip (start) VALUES (?)", Math.round(new Date().getTime() / 1000));
 	
 	var result = DB.execute("SELECT id FROM bb_trip ORDER BY id DESC LIMIT 1");
 	
-	var trip_id;
-	
-	while(result.isValidRow()) {
-		trip_id = result.fieldByName("id");
-		
-		result.next();
-	}
+	var trip_id = result.fieldByName("id");
 	
 	result.close();
 	
 	return trip_id;
 };
 
-exports.endTrip = function(_trip_id) {
+exports.tripEnd = function(_trip_id) {
 	if(typeof _trip_id == "undefined") {
-		_trip_id = exports.getValidTripId();
+		_trip_id = exports.tripGetValidId(false);
 	}
 	
 	DB.execute("UPDATE bb_trip SET end = ? WHERE id = ?", Math.round(new Date().getTime() / 1000), _trip_id);
 };
 
-exports.getValidTripId = function() {
+exports.tripGetValidId = function(_create) {
 	var result = DB.execute("SELECT id, start FROM bb_trip ORDER BY start DESC LIMIT 1");
 	
 	var trip_id,
@@ -42,22 +36,26 @@ exports.getValidTripId = function() {
 	result.close();
 	
 	if(trip_id == null || typeof trip_id == "undefined" || trip_id === false) {
-		trip_id = exports.createTrip();
+		if(_create) {
+			trip_id = exports.tripAdd();
+		}
 	} else {
 		var now = Math.round(new Date().getTime() / 1000);
-		var limit = (6 * 60) * 60 * 1000; // 6 Hours
+		var limit = (6 * 60) * 60; // 6 Hours
 		
 		if((now - limit) > trip_start) {
-			exports.endTrip(trip_id);
+			exports.tripEnd(trip_id);
 			
-			trip_id = exports.createTrip();
+			if(_create) {
+				trip_id = exports.tripAdd();
+			}
 		}
 	}
 	
 	return trip_id;
 };
 
-exports.getAllTrips = function() {
+exports.tripGetAll = function() {
 	var result = DB.execute("SELECT * FROM bb_trip ORDER BY start DESC");
 	var trips = [];
 	
@@ -78,27 +76,43 @@ exports.getAllTrips = function() {
 	return trips;
 };
 
-exports.getTrip = function(_trip_id) {
+exports.tripGetById = function(_trip_id) {
 	var result = DB.execute("SELECT * FROM bb_trip WHERE id = ? LIMIT 1", _trip_id);
-	var trip;
 	
-	while(result.isValidRow()) {
-		trip = {
-			id: result.fieldByName("id"),
-			start: result.fieldByName("start"),
-			end: result.fieldByName("end")
-		};
-		
-		result.next();
-	}
+	var trip = {
+		id: result.fieldByName("id"),
+		start: result.fieldByName("start"),
+		end: result.fieldByName("end")
+	};
 	
 	result.close;
 	
 	return trip;
 };
 
-exports.addCatch = function(_catch) {
-	var trip_id = exports.getValidTripId();
+exports.tripGetSpeciesList = function(_trid_id) {
+	var result = DB.execute("SELECT species FROM bb_log WHERE trip_id = ? ORDER BY species ASC", _trid_id);
+	
+	var species = {},
+		species_string_bits = [];
+	
+	while(result.isValidRow()) {
+		species[result.fieldByName("species")] = species[result.fieldByName("species")] ? species[result.fieldByName("species")] + 1 : 1;
+		
+		result.next();
+	}
+	
+	result.close;
+	
+	for(key in species) {
+		species_string_bits.push(exports.speciesGetById(key) + " (" + species[key] + ")");
+	}
+	
+	return species_string_bits.join(" • ");
+};
+
+exports.catchAdd = function(_catch) {
+	var trip_id = exports.tripGetValidId();
 	
 	var geolocation = {};
 	
@@ -132,30 +146,26 @@ exports.addCatch = function(_catch) {
 	}
 };
 
-exports.getCatch = function(_catch_id) {
+exports.catchGetById = function(_catch_id) {
 	var result = DB.execute("SELECT * FROM bb_log WHERE id = ? LIMIT 1", _catch_id);
 	
-	while(result.isValidRow()) {
-		var _catch = {
-			id: result.fieldByName("id"),
-			timestamp: result.fieldByName("timestamp"),
-			trip_id: result.fieldByName("trip_id"),
-			species: result.fieldByName("species"),
-			weight: JSON.parse(result.fieldByName("weight")),
-			length: JSON.parse(result.fieldByName("length")),
-			latitude: result.fieldByName("latitude"),
-			longitude: result.fieldByName("longitude")
-		};
-		
-		result.next();
-	}
+	var _catch = {
+		id: result.fieldByName("id"),
+		timestamp: result.fieldByName("timestamp"),
+		trip_id: result.fieldByName("trip_id"),
+		species: result.fieldByName("species"),
+		weight: JSON.parse(result.fieldByName("weight")),
+		length: JSON.parse(result.fieldByName("length")),
+		latitude: result.fieldByName("latitude"),
+		longitude: result.fieldByName("longitude")
+	};
 	
 	result.close;
 	
 	return _catch;
 };
 
-exports.getCatchesByTrip = function(_trip_id) {
+exports.catchGetByTripId = function(_trip_id) {
 	var result = DB.execute("SELECT * FROM bb_log WHERE trip_id = ? ORDER BY timestamp DESC", _trip_id);
 	
 	var catches = [];
@@ -179,28 +189,29 @@ exports.getCatchesByTrip = function(_trip_id) {
 	return catches;
 };
 
-exports.getSpeciesByTrip = function(_trid_id) {
-	var result = DB.execute("SELECT species FROM bb_log WHERE trip_id = ? ORDER BY species ASC", _trid_id);
+exports.catchGetCountByTrip = function() {
+	var trip_id = exports.tripGetValidId(false);
+	var result = DB.execute("SELECT count(*) as CatchCount FROM bb_log WHERE trip_id = ? ORDER BY timestamp DESC", trip_id);
 	
-	var species = {},
-		species_string_bits = [];
-	
-	while(result.isValidRow()) {
-		species[result.fieldByName("species")] = species[result.fieldByName("species")] ? species[result.fieldByName("species")] + 1 : 1;
-		
-		result.next();
-	}
+	var count = result.fieldByName("CatchCount");
 	
 	result.close;
 	
-	for(key in species) {
-		species_string_bits.push(exports.getSpeciesById(key) + " (" + species[key] + ")");
-	}
-	
-	return species_string_bits.join(" • ");
+	return count;
 };
 
-exports.getAllSpecies = function() {
+exports.catchGetCountByLocation = function(_geo) {
+	// 0.001 = 316.8ft
+	var result = DB.execute("SELECT count(*) as CatchCount FROM bb_log WHERE latitude < " + (_geo.latitude + 0.001) + " AND latitude > " + (_geo.latitude - 0.001) + " AND longitude < " + (_geo.longitude + 0.001) + " AND longitude > " + (_geo.longitude - 0.001) + " LIMIT 100");
+	
+	var count = result.fieldByName("CatchCount");
+	
+	result.close;
+	
+	return count;
+};
+
+exports.speciesGetAll = function() {
 	var result = DB.execute("SELECT * FROM bb_species ORDER BY name ASC");
 	var species = [];
 	
@@ -220,7 +231,7 @@ exports.getAllSpecies = function() {
 	return species;
 };
 
-exports.getVisibleSpecies = function() {
+exports.speciesGetVisible = function() {
 	var result = DB.execute("SELECT * FROM bb_species WHERE visible = ? ORDER BY name ASC", 1);
 	var species = [];
 	
@@ -239,63 +250,18 @@ exports.getVisibleSpecies = function() {
 	return species;
 };
 
-exports.getSpeciesById = function(_species_id) {
+exports.speciesGetById = function(_species_id) {
 	var result = DB.execute("SELECT * FROM bb_species WHERE id = ? LIMIT 1", _species_id);
-	var name;
 	
-	while(result.isValidRow()) {
-		name = result.fieldByName("name");
-		
-		result.next();
-	}
+	var name = result.fieldByName("name");
 	
 	result.close;
 	
 	return name;
 };
 
-exports.setSpeciesVisibility = function(_species_id, _visible) {
+exports.speciesSetVisible = function(_species_id, _visible) {
 	DB.execute("UPDATE bb_species SET visible = ? WHERE id = ?", _visible, _species_id);
-};
-
-exports.getTripCatchCount = function() {
-	var trip_id = exports.getValidTripId();
-	var result = DB.execute("SELECT id FROM bb_log WHERE trip_id = ? ORDER BY timestamp DESC", trip_id);
-	
-	var catches = [];
-	
-	while(result.isValidRow()) {
-		var _catch = {
-			id: result.fieldByName("id")
-		};
-		
-		catches.push(_catch);
-		result.next();
-	}
-	
-	result.close;
-	
-	return catches.length;
-};
-
-exports.getLocationCatchCount = function(_geo) {
-	// 0.001 = 316.8ft
-	var result = DB.execute("SELECT id FROM bb_log WHERE latitude < " + (_geo.latitude + 0.001) + " AND latitude > " + (_geo.latitude - 0.001) + " AND longitude < " + (_geo.longitude + 0.001) + " AND longitude > " + (_geo.longitude - 0.001) + " LIMIT 100");
-	
-	var catches = [];
-	
-	while(result.isValidRow()) {
-		var _catch = {
-			id: result.fieldByName("id")
-		};
-		
-		catches.push(_catch);
-		result.next();
-	}
-	
-	result.close;
-	
-	return catches.length;
 };
 
 exports.populate = function() {

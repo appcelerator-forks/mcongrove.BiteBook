@@ -139,22 +139,6 @@ static void select_single_click_handler(ClickRecognizerRef recognizer, void *con
 	APP_LOG(APP_LOG_LEVEL_INFO, "Click Received:Select");
 	
 	show_log_species();
-	
-	/*
-	Tuplet value = TupletInteger(1, 1);
-	
-	DictionaryIterator *iter;
-	app_message_outbox_begin(&iter);
-	
-	if(iter == NULL) {
-		return;
-	}
-	
-	dict_write_tuplet(iter, &value);
-	dict_write_end(iter);
-	
-	app_message_outbox_send();
-	*/
 }
 
 /** Window Management **/

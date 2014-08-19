@@ -16,7 +16,7 @@ function init() {
 	
 	App.Pebble.connect({
 		success: watchConnected,
-		error: watchDisonnected
+		error: watchDisconnected
 	});
 }
 
@@ -36,7 +36,7 @@ function watchConnected(_event) {
 	}, 1000);
 }
 
-function watchDisonnected(_event) {
+function watchDisconnected(_event) {
 	$.Status.text = "Disconnected";
 	
 	clearInterval(interval);

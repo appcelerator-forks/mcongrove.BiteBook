@@ -14,18 +14,16 @@ function init() {
 }
 
 function toggleVisibility() {
-	var db = Ti.Database.open("BiteBook");
-	
 	if(args.visible) {
 		$.Visible.image = "images/icon_no.png";
 		args.visible = 0;
 		
-		App.Database.setSpeciesVisibility(args.id, 0);
+		App.Database.speciesSetVisible(args.id, 0);
 	} else {
 		$.Visible.image = "images/icon_yes.png";
 		args.visible = 1;
 		
-		App.Database.setSpeciesVisibility(args.id, 1);
+		App.Database.speciesSetVisible(args.id, 1);
 	}
 }
 

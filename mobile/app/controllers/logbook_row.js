@@ -8,7 +8,7 @@ function init() {
 	var date = Moment.unix(args.start);
 	
 	$.Date.text = date.format("MMMM Do, YYYY");
-	$.Species.text = App.Database.getSpeciesByTrip(args.id);
+	$.Species.text = App.Database.tripGetSpeciesList(args.id);
 }
 
 init();

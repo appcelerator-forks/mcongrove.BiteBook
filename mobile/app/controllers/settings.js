@@ -15,6 +15,10 @@ var OPTIONS = [
 	{
 		title: "Connect Pebble Watch",
 		controller: "settings_pebbleconnect"
+	},
+	{
+		title: "About BiteBook",
+		controller: "settings_about"
 	}
 ];
 

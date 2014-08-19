@@ -53,7 +53,7 @@
     </mobileweb>
     <modules>
         <module platform="iphone">ti.map</module>
-        <module platform="iphone" version="0.5.0">org.beuckman.tipebble</module>
+        <module platform="iphone" version="0.5.1">org.beuckman.tipebble</module>
     </modules>
     <deployment-targets>
         <target device="android">false</target>

@@ -2,7 +2,7 @@
 var App = require("core");
 
 function init() {
-	var species = App.Database.getAllSpecies();
+	var species = App.Database.speciesGetAll();
 	var rows = [];
 	
 	for(var i = 0, x = species.length; i < x; i++) {

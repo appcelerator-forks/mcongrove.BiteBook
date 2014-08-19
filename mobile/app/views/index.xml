@@ -6,8 +6,5 @@
 		<Tab id="TabLogbook" title="Logbook" icon="images/icon_logbook.png">
 			<Require type="view" src="logbook" />
 		</Tab>
-		<Tab id="TabSettings" title="Settings" icon="images/icon_settings.png">
-			<Require type="view" src="settings" />
-		</Tab>
 	</TabGroup>
 </Alloy>

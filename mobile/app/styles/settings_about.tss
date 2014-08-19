@@ -1,0 +1,13 @@
+"Window": {
+	layout: "vertical"
+},
+"Label": {
+	top: 20,
+	right: 20,
+	bottom: 0,
+	left: 20,
+	font: {
+		fontSize: 14,
+		fontFamily: "HelveticaNeue-Thin"
+	}
+}
