@@ -2,12 +2,14 @@
 var App = require("core");
 
 var OPTIONS = [
+	/*
 	{
 		title: "Species List",
 		controller: "settings_species"
 	},
+	*/
 	{
-		title: "Download Pebble App",
+		title: "Download BiteBook on Pebble",
 		url: "pebble://appstore/52cdd45efc5bf835cb00001e"
 	},
 	{

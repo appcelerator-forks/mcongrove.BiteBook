@@ -1,6 +1,8 @@
 #include "log_length.h"
 #include <pebble.h>
 #include "config.c"
+#include "log_weight.h"
+#include "log_complete.h"
 
 static Window *s_window;
 static GFont s_res_bitham_30_black;
@@ -14,10 +16,22 @@ static BitmapLayer *s_bitmap_arrow_down_inch;
 static BitmapLayer *s_bitmap_arrow_up_inch;
 static BitmapLayer *s_bitmap_arrow_down_feet;
 static BitmapLayer *s_bitmap_arrow_up_feet;
+static InverterLayer *s_inverter_layer;
+
+static char feetText[4];
+static char inchText[4];
+
+static int EDIT_POSITION = 0;
+static int LOG_FEET = 0;
+static int LOG_INCH = 0;
 
 /** UI **/
 
 static void initialise_ui(void) {
+	EDIT_POSITION = 0;
+	LOG_FEET = 0;
+	LOG_INCH = 0;
+
 	s_window = window_create();
 	window_set_background_color(s_window, GColorBlack);
 	window_set_fullscreen(s_window, true);
@@ -29,7 +43,7 @@ static void initialise_ui(void) {
 	s_text_feet = text_layer_create(GRect(0, 52, 72, 30));
 	text_layer_set_background_color(s_text_feet, GColorClear);
 	text_layer_set_text_color(s_text_feet, GColorWhite);
-	text_layer_set_text(s_text_feet, "");
+	text_layer_set_text(s_text_feet, "0");
 	text_layer_set_text_alignment(s_text_feet, GTextAlignmentCenter);
 	text_layer_set_font(s_text_feet, s_res_bitham_30_black);
 	layer_add_child(window_get_root_layer(s_window), (Layer *)s_text_feet);
@@ -37,7 +51,7 @@ static void initialise_ui(void) {
 	s_text_inch = text_layer_create(GRect(72, 52, 72, 30));
 	text_layer_set_background_color(s_text_inch, GColorClear);
 	text_layer_set_text_color(s_text_inch, GColorWhite);
-	text_layer_set_text(s_text_inch, "");
+	text_layer_set_text(s_text_inch, "0");
 	text_layer_set_text_alignment(s_text_inch, GTextAlignmentCenter);
 	text_layer_set_font(s_text_inch, s_res_bitham_30_black);
 	layer_add_child(window_get_root_layer(s_window), (Layer *)s_text_inch);
@@ -71,6 +85,9 @@ static void initialise_ui(void) {
 	s_bitmap_arrow_up_feet = bitmap_layer_create(GRect(28, 27, 17, 15));
 	bitmap_layer_set_bitmap(s_bitmap_arrow_up_feet, s_res_icon_arrow_up_white);
 	layer_add_child(window_get_root_layer(s_window), (Layer *)s_bitmap_arrow_up_feet);
+	
+	s_inverter_layer = inverter_layer_create(GRect(0, 0, 144, 168));
+	layer_add_child(window_get_root_layer(s_window), (Layer *)s_inverter_layer);
 }
 
 static void destroy_ui(void) {
@@ -79,6 +96,7 @@ static void destroy_ui(void) {
 	text_layer_destroy(s_text_inch);
 	text_layer_destroy(s_text_label_feet);
 	text_layer_destroy(s_text_label_inch);
+	inverter_layer_destroy(s_inverter_layer);
 	bitmap_layer_destroy(s_bitmap_arrow_down_inch);
 	bitmap_layer_destroy(s_bitmap_arrow_up_inch);
 	bitmap_layer_destroy(s_bitmap_arrow_down_feet);
@@ -91,7 +109,75 @@ static void handle_window_unload(Window* window) {
 	destroy_ui();
 }
 
+/** Event Handlers **/
+
+static void up_repeating_click_handler(ClickRecognizerRef recognizer, void *context) {
+	if(EDIT_POSITION == 0) {
+		if(LOG_FEET < 5) {
+			LOG_FEET++;
+			
+			snprintf(feetText, 4, "%d", LOG_FEET);
+			text_layer_set_text(s_text_feet, feetText);
+		}
+	} else {
+		if(LOG_INCH < 11) {
+			LOG_INCH++;
+		} else {
+			LOG_INCH = 0;
+		}
+			
+		snprintf(inchText, 4, "%d", LOG_INCH);
+		text_layer_set_text(s_text_inch, inchText);
+	}
+}
+
+static void down_repeating_click_handler(ClickRecognizerRef recognizer, void *context) {
+	if(EDIT_POSITION == 0) {
+		if(LOG_FEET > 0) {
+			LOG_FEET--;
+			
+			snprintf(feetText, 4, "%d", LOG_FEET);
+			text_layer_set_text(s_text_feet, feetText);
+		}
+	} else {
+		if(LOG_INCH > 0) {
+			LOG_INCH--;
+		} else {
+			LOG_INCH = 11;
+		}
+		
+		snprintf(inchText, 4, "%d", LOG_INCH);
+		text_layer_set_text(s_text_inch, inchText);
+	}
+}
+
+static void select_single_click_handler(ClickRecognizerRef recognizer, void *context) {
+	if(EDIT_POSITION == 0) {
+		EDIT_POSITION = 1;
+	} else {
+		persist_write_int(KEY_LOG_LENGTH_FEET, LOG_FEET);
+		persist_write_int(KEY_LOG_LENGTH_INCH, LOG_INCH);
+		
+		show_log_complete();
+	}
+}
+
+static void back_single_click_handler(ClickRecognizerRef recognizer, void *context) {
+	if(EDIT_POSITION == 1) {
+		EDIT_POSITION = 0;
+	} else {
+		hide_log_length();
+	}
+}
+
 /** Window Management **/
+
+static void config_provider(void *context) {
+	window_single_repeating_click_subscribe(BUTTON_ID_UP, 250, up_repeating_click_handler);
+	window_single_repeating_click_subscribe(BUTTON_ID_DOWN, 250, down_repeating_click_handler);
+	window_single_click_subscribe(BUTTON_ID_SELECT, select_single_click_handler);
+	window_single_click_subscribe(BUTTON_ID_BACK, back_single_click_handler);
+}
 
 void show_log_length(void) {
 	initialise_ui();
@@ -100,7 +186,11 @@ void show_log_length(void) {
 		.unload = handle_window_unload,
 	});
 	
+	window_set_click_config_provider(s_window, config_provider);
+	
 	window_stack_push(s_window, true);
+	
+	hide_log_weight();
 }
 
 void hide_log_length(void) {

@@ -1,21 +1,24 @@
 #include "main.h"
 #include <pebble.h>
 #include "config.c"
+#include "log_species.h"
+#include "battbar.h"
 
 static Window *s_window;
 static GFont s_res_gothic_18_bold;
 static GBitmap *s_res_icon_location_white;
 static GBitmap *s_res_icon_fish_white;
-static GFont s_res_roboto_bold_subset_49;
+static GFont s_res_bitham_42_bold;
 static TextLayer *s_text_count_location;
 static BitmapLayer *s_bitmap_icon_location;
 static TextLayer *s_text_count_trip;
 static BitmapLayer *s_bitmap_icon_fish;
 static TextLayer *s_text_time;
+static InverterLayer *s_inverter_layer;
 
-char timeText[] = "00:00";
-char tripCountText[2];
-char locationCountText[2];
+static char timeText[] = "00:00";
+static char tripCountText[4];
+static char locationCountText[4];
 
 static int TRIP_COUNT = 0;
 static int LOCATION_COUNT = 0;
@@ -30,9 +33,9 @@ static void initialise_ui(void) {
 	s_res_gothic_18_bold = fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD);
 	s_res_icon_location_white = gbitmap_create_with_resource(RESOURCE_ID_ICON_LOCATION_WHITE);
 	s_res_icon_fish_white = gbitmap_create_with_resource(RESOURCE_ID_ICON_FISH_WHITE);
-	s_res_roboto_bold_subset_49 = fonts_get_system_font(FONT_KEY_ROBOTO_BOLD_SUBSET_49);
+	s_res_bitham_42_bold = fonts_get_system_font(FONT_KEY_BITHAM_42_BOLD);
 	
-	s_text_count_location = text_layer_create(GRect(120, 131, 21, 21));
+	s_text_count_location = text_layer_create(GRect(120, 128, 21, 21));
 	text_layer_set_background_color(s_text_count_location, GColorClear);
 	text_layer_set_text_color(s_text_count_location, GColorWhite);
 	text_layer_set_text(s_text_count_location, "0");
@@ -43,7 +46,7 @@ static void initialise_ui(void) {
 	bitmap_layer_set_bitmap(s_bitmap_icon_location, s_res_icon_location_white);
 	layer_add_child(window_get_root_layer(s_window), (Layer *)s_bitmap_icon_location);
 	
-	s_text_count_trip = text_layer_create(GRect(53, 131, 21, 21));
+	s_text_count_trip = text_layer_create(GRect(53, 128, 21, 21));
 	text_layer_set_background_color(s_text_count_trip, GColorClear);
 	text_layer_set_text_color(s_text_count_trip, GColorWhite);
 	text_layer_set_text(s_text_count_trip, "0");
@@ -59,8 +62,20 @@ static void initialise_ui(void) {
 	text_layer_set_text_color(s_text_time, GColorWhite);
 	text_layer_set_text(s_text_time, "");
 	text_layer_set_text_alignment(s_text_time, GTextAlignmentCenter);
-	text_layer_set_font(s_text_time, s_res_roboto_bold_subset_49);
+	text_layer_set_font(s_text_time, s_res_bitham_42_bold);
 	layer_add_child(window_get_root_layer(s_window), (Layer *)s_text_time);
+	
+	s_inverter_layer = inverter_layer_create(GRect(0, 0, 144, 168));
+	layer_add_child(window_get_root_layer(s_window), (Layer *)s_inverter_layer);
+	
+	BBOptions options;
+	options.position = BATTBAR_POSITION_TOP;
+	options.direction = BATTBAR_DIRECTION_DOWN;
+	options.color = BATTBAR_COLOR_BLACK;
+	options.isWatchApp = false;
+	
+	SetupBattBar(options, window_get_root_layer(s_window));
+	DrawBattBar();
 }
 
 static void destroy_ui(void) {
@@ -70,6 +85,7 @@ static void destroy_ui(void) {
 	text_layer_destroy(s_text_count_trip);
 	bitmap_layer_destroy(s_bitmap_icon_fish);
 	text_layer_destroy(s_text_time);
+	inverter_layer_destroy(s_inverter_layer);
 	gbitmap_destroy(s_res_icon_location_white);
 	gbitmap_destroy(s_res_icon_fish_white);
 }
@@ -85,7 +101,7 @@ void set_trip_count() {
 		TRIP_COUNT = persist_read_int(KEY_TRIP);
 	}
 	
-	snprintf(tripCountText, 100, "%d", TRIP_COUNT);
+	snprintf(tripCountText, 4, "%d", TRIP_COUNT);
 	
 	text_layer_set_text(s_text_count_trip, tripCountText);
 }
@@ -95,7 +111,7 @@ void set_location_count() {
 		LOCATION_COUNT = persist_read_int(KEY_LOCATION);
 	}
 	
-	snprintf(locationCountText, 100, "%d", LOCATION_COUNT);
+	snprintf(locationCountText, 4, "%d", LOCATION_COUNT);
 	
 	text_layer_set_text(s_text_count_location, locationCountText);
 }
@@ -119,9 +135,12 @@ static void handle_minute_tick(struct tm *tick_time, TimeUnits units_changed) {
 	text_layer_set_text(s_text_time, timeText);
 }
 
-void select_single_click_handler(ClickRecognizerRef recognizer, void *context) {
+static void select_single_click_handler(ClickRecognizerRef recognizer, void *context) {
 	APP_LOG(APP_LOG_LEVEL_INFO, "Click Received:Select");
 	
+	show_log_species();
+	
+	/*
 	Tuplet value = TupletInteger(1, 1);
 	
 	DictionaryIterator *iter;
@@ -135,11 +154,12 @@ void select_single_click_handler(ClickRecognizerRef recognizer, void *context) {
 	dict_write_end(iter);
 	
 	app_message_outbox_send();
+	*/
 }
 
 /** Window Management **/
 
-void config_provider(void *context) {
+static void config_provider(void *context) {
 	window_single_click_subscribe(BUTTON_ID_SELECT, select_single_click_handler);
 }
 

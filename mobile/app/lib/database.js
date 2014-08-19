@@ -360,7 +360,7 @@ exports.populate = function() {
 	DB.execute("INSERT INTO bb_species VALUES(45,'Sturgeon',0)");
 	DB.execute("INSERT INTO bb_species VALUES(46,'Sturgeon, Atlantic',0)");
 	DB.execute("INSERT INTO bb_species VALUES(47,'Sturgeon, Shortnose',0)");
-	DB.execute("INSERT INTO bb_species VALUES(48,'Sunfish',10)");
+	DB.execute("INSERT INTO bb_species VALUES(48,'Sunfish',1)");
 	DB.execute("INSERT INTO bb_species VALUES(49,'Sunfish, Green',0)");
 	DB.execute("INSERT INTO bb_species VALUES(50,'Sunfish, Redbreast',0)");
 	DB.execute("INSERT INTO bb_species VALUES(51,'Sunfish, Redear',0)");
