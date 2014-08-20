@@ -3,12 +3,15 @@ var Pebble = require("org.beuckman.tipebble");
 Pebble.setAppUUID("4e212afd-b33e-440e-b20b-7f2c3fafc5ea");
 
 exports.connected = false;
+exports.connection = Pebble;
 
 exports.connect = function(_data) {
 	Ti.API.info("@Pebble connect");
 	
 	if(!exports.connected) {
 		launchApp(_data ? _data : null);
+	} else {
+		_data.success ? _data.success() : null;
 	}
 };
 
@@ -82,10 +85,5 @@ function killApp(_data) {
 	}
 }
 
-function receiveMessage(_data) {
-	Ti.API.warn(JSON.stringify(JSON.parse(_data.message)));
-}
-
 Pebble.addEventListener("watchConnected", watchConnected);
 Pebble.addEventListener("watchDisconnected", watchDisconnected);
-Pebble.addEventListener("update", receiveMessage);

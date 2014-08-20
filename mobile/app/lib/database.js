@@ -20,6 +20,13 @@ exports.tripEnd = function(_trip_id) {
 	DB.execute("UPDATE bb_trip SET end = ? WHERE id = ?", Math.round(new Date().getTime() / 1000), _trip_id);
 };
 
+exports.tripRemove = function(_trip_id) {
+	DB.execute("DELETE FROM bb_trip WHERE id = ?", _trip_id);
+	DB.execute("DELETE FROM bb_log WHERE trip_id = ?", _trip_id);
+	
+	Ti.App.fireEvent("BB_UPDATE");
+};
+
 exports.tripGetValidId = function(_create) {
 	var result = DB.execute("SELECT id, start FROM bb_trip ORDER BY start DESC LIMIT 1");
 	
@@ -112,7 +119,7 @@ exports.tripGetSpeciesList = function(_trid_id) {
 };
 
 exports.catchAdd = function(_catch) {
-	var trip_id = exports.tripGetValidId();
+	var trip_id = exports.tripGetValidId(true);
 	
 	var geolocation = {};
 	
@@ -139,10 +146,23 @@ exports.catchAdd = function(_catch) {
 				geolocation.longitude
 			);
 			
-			Ti.App.fireEvent("BB_CATCH");
+			Ti.App.fireEvent("BB_UPDATE");
 		});
 	} else {
 		alert("Please turn on location services");
+	}
+};
+
+exports.catchRemove = function(_catch_id, _trip_id) {
+	DB.execute("DELETE FROM bb_log WHERE id = ?", _catch_id);
+	Ti.API.warn(_trip_id)
+	
+	var trip_count = exports.catchGetCountByTrip(_trip_id);
+	
+	if(trip_count == 0) {
+		exports.tripRemove(_trip_id);
+	} else {
+		Ti.App.fireEvent("BB_UPDATE");
 	}
 };
 
@@ -189,9 +209,12 @@ exports.catchGetByTripId = function(_trip_id) {
 	return catches;
 };
 
-exports.catchGetCountByTrip = function() {
-	var trip_id = exports.tripGetValidId(false);
-	var result = DB.execute("SELECT count(*) as CatchCount FROM bb_log WHERE trip_id = ? ORDER BY timestamp DESC", trip_id);
+exports.catchGetCountByTrip = function(_trip_id) {
+	if(!_trip_id) {
+		_trip_id = exports.tripGetValidId(false);
+	}
+	
+	var result = DB.execute("SELECT count(*) as CatchCount FROM bb_log WHERE trip_id = ? ORDER BY timestamp DESC", _trip_id);
 	
 	var count = result.fieldByName("CatchCount");
 	

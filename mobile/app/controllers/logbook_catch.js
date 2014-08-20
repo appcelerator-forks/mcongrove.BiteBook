@@ -44,10 +44,16 @@ function init() {
 		
 		var row = Alloy.createController("logbook_catch_row", _catch).getView();
 		
+		row.catch_id = _catch.id;
+		
 		rows.push(row);
 	}
 	
 	$.Table.setData(rows);
 }
+		
+$.Table.addEventListener("delete", function(_event) {
+	App.Database.catchRemove(_event.row.catch_id, TRIP.id);
+});
 
 init();

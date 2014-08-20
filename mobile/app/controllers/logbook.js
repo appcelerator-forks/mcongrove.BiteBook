@@ -24,3 +24,7 @@ function init() {
 }
 
 $.LogbookWindow.addEventListener("focus", init);
+		
+$.Table.addEventListener("delete", function(_event) {
+	App.Database.tripRemove(_event.row.trip_id);
+});

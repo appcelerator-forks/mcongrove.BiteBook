@@ -1,5 +1,6 @@
 "TableViewRow": {
-	selectionStyle: Ti.UI.iPhone.TableViewCellSelectionStyle.NONE
+	selectionStyle: Ti.UI.iPhone.TableViewCellSelectionStyle.NONE,
+	editable: true
 },
 ".container": {
 	top: 0,

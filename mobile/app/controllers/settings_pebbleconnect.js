@@ -4,17 +4,7 @@ var App = require("core");
 var interval;
 
 function init() {
-	$.Status.text = "Connecting to Pebble";
-	
-	interval = setInterval(function() {
-		if($.Dots.text.length > 2) {
-			$.Dots.text = "";
-		} else {
-			$.Dots.text = $.Dots.text + ".";
-		}
-	}, 500);
-	
-	App.Pebble.connect({
+	var connected = App.Pebble.connect({
 		success: watchConnected,
 		error: watchDisconnected
 	});

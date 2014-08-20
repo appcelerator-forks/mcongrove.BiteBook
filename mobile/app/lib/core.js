@@ -68,7 +68,8 @@ var App = {
 		Ti.App.addEventListener("close", App.exit);
 		Ti.App.addEventListener("resumed", App.resume);
 		Ti.Gesture.addEventListener("orientationchange", App.orientationChange);
-		Ti.App.addEventListener("BB_CATCH", App.updateCatchCounts);
+		Ti.App.addEventListener("BB_UPDATE", App.updateCatchCounts);
+		App.Pebble.connection.addEventListener("update", App.receiveFromPebble);
 
 		if(OS_ANDROID) {
 			Ti.Android.currentActivity.addEventListener("resume", App.resume);
@@ -121,6 +122,28 @@ var App = {
 				1: App.Database.catchGetCountByLocation(App.Geo)
 			}
 		});
+	},
+	/**
+	 * Fired when a catch is received from the Pebble
+	 */
+	receiveFromPebble: function(_data) {
+		if(_data.message.charAt(0) == "{") {
+			var _catch = JSON.parse(_data.message);
+			
+			var VALUES = {
+				species: _catch.S,
+				weight: {
+					pound: _catch.WP,
+					ounce: _catch.WO
+				},
+				length: {
+					feet: _catch.LF,
+					inch: _catch.LI
+				}
+			};
+			
+			App.Database.catchAdd(VALUES);
+		}
 	},
 	/**
 	 * Global network event handler
