@@ -4,8 +4,12 @@
 			<Label id="Species" />
 			
 			<View class="stats">
-				<Label id="Weight" />
-				<Label id="Length" />
+				<Label id="Time" />
+				
+				<View class="right">
+					<Label id="Weight" />
+					<Label id="Length" />
+				</View>
 			</View>
 		</View>
 	</TableViewRow>

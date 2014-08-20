@@ -1,5 +1,11 @@
 <Alloy>
-	<Window id="SettingsWindow" title="Settings">
-		<TableView id="Table" />
-	</Window>
+	<NavigationWindow id="NavWindow">
+		<Window id="SettingsWindow" title="Settings">
+			<RightNavButton>
+				<Button systemButton="Ti.UI.iPhone.SystemButton.DONE" onClick="closeSettings" />
+			</RightNavButton>
+			
+			<TableView id="Table" />
+		</Window>
+	</NavigationWindow>
 </Alloy>

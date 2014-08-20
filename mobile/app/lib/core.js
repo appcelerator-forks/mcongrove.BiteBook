@@ -51,6 +51,11 @@ var App = {
 	 */
 	Pebble: require("pebble"),
 	/**
+	 * Background service flags
+	 */
+	BackgroundServiceStarted: false,
+	BackgroundServiceActive: false,
+	/**
 	 * Geo coordinates
 	 */
 	Geo: {
@@ -69,12 +74,13 @@ var App = {
 		Ti.App.addEventListener("resumed", App.resume);
 		Ti.Gesture.addEventListener("orientationchange", App.orientationChange);
 		Ti.App.addEventListener("BB_UPDATE", App.updateCatchCounts);
-		App.Pebble.connection.addEventListener("update", App.receiveFromPebble);
+		App.Pebble.Kit.addEventListener("update", App.receiveFromPebble);
 
 		if(OS_ANDROID) {
 			Ti.Android.currentActivity.addEventListener("resume", App.resume);
 		}
 		
+		// Register geolocation service
 		if(Ti.Geolocation.locationServicesEnabled) {
 			Ti.Geolocation.purpose = "Catch Geolocation Logging";
 			Ti.Geolocation.accuracy = Ti.Geolocation.ACCURACY_BEST;
@@ -86,6 +92,8 @@ var App = {
 					Ti.API.error(_event.error);
 				} else {
 					App.Geo = _event.coords;
+					
+					App.updateCatchCounts();
 				}
 			});
 			
@@ -108,41 +116,47 @@ var App = {
 	 * Opens the settings screen
 	 */
 	openSettings: function() {
-		var settings = Alloy.createController("settings").getView();
+		var SettingsNavigationWindow = Alloy.createController("settings").getView();
 		
-		App.TabGroup.activeTab.open(settings);
+		SettingsNavigationWindow.open();
 	},
 	/**
 	 * Handles when a catch has been logged
 	 */
 	updateCatchCounts: function(_event) {
-		App.Pebble.sendMessage({
-			message: {
-				0: App.Database.catchGetCountByTrip(),
-				1: App.Database.catchGetCountByLocation(App.Geo)
-			}
-		});
+		if(!App.BackgroundServiceActive) {
+			App.Pebble.sendMessage({
+				message: {
+					0: App.Database.catchGetCountByTrip(),
+					1: App.Database.catchGetCountByLocation(App.Geo)
+				}
+			});
+		}
 	},
 	/**
 	 * Fired when a catch is received from the Pebble
 	 */
 	receiveFromPebble: function(_data) {
-		if(_data.message.charAt(0) == "{") {
-			var _catch = JSON.parse(_data.message);
-			
-			var VALUES = {
-				species: _catch.S,
-				weight: {
-					pound: _catch.WP,
-					ounce: _catch.WO
-				},
-				length: {
-					feet: _catch.LF,
-					inch: _catch.LI
-				}
-			};
-			
-			App.Database.catchAdd(VALUES);
+		if(!App.BackgroundServiceActive) {
+			if(_data.message == "CONNECT") {
+				App.updateCatchCounts();
+			} else if(_data.message.charAt(0) == "{") {
+				var _catch = JSON.parse(_data.message);
+				
+				var VALUES = {
+					species: _catch.S,
+					weight: {
+						pound: _catch.WP,
+						ounce: _catch.WO
+					},
+					length: {
+						feet: _catch.LF,
+						inch: _catch.LI
+					}
+				};
+				
+				App.Database.catchAdd(VALUES);
+			}
 		}
 	},
 	/**
@@ -157,14 +171,14 @@ var App = {
 	 * @param {Object} _event Standard Ti callback
 	 */
 	exit: function(_event) {
-		
+		App.BackgroundServiceActive = true;
 	},
 	/**
 	 * Resume event observer
 	 * @param {Object} _event Standard Ti callback
 	 */
 	resume: function(_event) {
-		
+		App.BackgroundServiceActive = false;
 	},
 	/**
 	 * Handle the orientation change event callback

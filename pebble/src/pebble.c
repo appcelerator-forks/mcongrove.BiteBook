@@ -73,6 +73,22 @@ void out_failed_handler(DictionaryIterator *send, AppMessageResult reason, void 
 	APP_LOG(APP_LOG_LEVEL_ERROR, message);
 }
 
+static void send_to_phone() {	
+	DictionaryIterator *iter;
+	app_message_outbox_begin(&iter);
+	
+	if(iter == NULL) {
+		return;
+	}
+	
+	static char message[10] = "CONNECT";
+	
+	dict_write_cstring(iter, 0, message);
+	dict_write_end(iter);
+	
+	app_message_outbox_send();
+}
+
 /** Pebble **/
 
 static void init() {
@@ -86,6 +102,7 @@ static void init() {
 	app_message_open(inbound_size, outbound_size);
 	
 	show_main();
+	send_to_phone();
 }
 
 static void deinit() {

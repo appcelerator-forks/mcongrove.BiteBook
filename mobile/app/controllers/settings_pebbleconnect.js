@@ -4,10 +4,16 @@ var App = require("core");
 var interval;
 
 function init() {
-	var connected = App.Pebble.connect({
+	App.Pebble.connect({
 		success: watchConnected,
 		error: watchDisconnected
 	});
+	
+	if(!App.BackgroundServiceStarted) {
+		App.Pebble.registerBackgroundService();
+		
+		App.BackgroundServiceStarted = true;
+	}
 }
 
 function watchConnected(_event) {

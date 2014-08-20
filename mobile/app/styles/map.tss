@@ -1,0 +1,12 @@
+"MapWindow": {
+	layout: "vertical"
+},
+"#Map": {
+	animate: true,
+	regionFit: true,
+	userLocation: true,
+	top: 0,
+	left: 0,
+	width: Ti.UI.FILL,
+	height: Ti.UI.FILL
+}

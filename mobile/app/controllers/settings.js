@@ -10,7 +10,8 @@ var OPTIONS = [
 	*/
 	{
 		title: "Download BiteBook on Pebble",
-		url: "pebble://appstore/52cdd45efc5bf835cb00001e"
+		url: "http://www.bitebook.net/bitebook.pbw"
+		//url: "pebble://appstore/53ee756fbe4dd4f5fe0001cb"
 	},
 	{
 		title: "Connect Pebble Watch",
@@ -34,7 +35,7 @@ function init() {
 			row.addEventListener("click", function(_event) {
 				var detail = Alloy.createController(_event.row.controller).getView();
 				
-				App.TabGroup.activeTab.open(detail);
+				$.NavWindow.openWindow(detail);
 			});
 		} else if(OPTIONS[i].url) {
 			row.url = OPTIONS[i].url;
@@ -48,6 +49,10 @@ function init() {
 	}
 	
 	$.Table.setData(rows);
+}
+
+function closeSettings() {
+	$.NavWindow.close();
 }
 
 init();

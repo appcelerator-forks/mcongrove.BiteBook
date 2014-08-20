@@ -1,0 +1,5 @@
+<Alloy>
+	<Window id="MapWindow" title="Catch Map">
+		<Module id="Map" module="ti.map" method="createView" />
+	</Window>
+</Alloy>
