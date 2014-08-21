@@ -1,19 +1,41 @@
 // App bootstrap
-var App = require("core");
+var App = require("core"),
+	Social = require("social");
 
 var OPTIONS = [
-	{
-		title: "Download BiteBook on Pebble",
-		url: "http://www.bitebook.net/bitebook.pbw"
-		//url: "pebble://appstore/53ee756fbe4dd4f5fe0001cb"
-	},
 	{
 		title: "Connect Pebble Watch",
 		controller: "settings_pebbleconnect"
 	},
 	{
+		title: "Download BiteBook on Pebble",
+		action: function() {
+			Ti.Platform.openURL("http://www.bitebook.net/bitebook.pbw");
+			//Ti.Platform.openURL("pebble://appstore/53ee756fbe4dd4f5fe0001cb");
+		}
+	},
+	{
 		title: "About BiteBook",
 		controller: "settings_about"
+	},
+	{
+		title: "Contact Developer",
+		action: function() {
+			var email = Ti.UI.createEmailDialog({
+				barColor: "#3DA0DA"
+			});
+		
+			email.toRecipients = [ "me@mattcongrove.com" ];
+			email.subject = "BiteBook Contact";
+			email.messageBody = "";
+			email.open();
+		}
+	},
+	{
+		title: "Tell Your Friends",
+		action: function() {
+			Social.share();
+		}
 	}
 ];
 
@@ -31,12 +53,8 @@ function init() {
 				
 				$.NavWindow.openWindow(detail);
 			});
-		} else if(OPTIONS[i].url) {
-			row.url = OPTIONS[i].url;
-			
-			row.addEventListener("click", function(_event) {
-				Ti.Platform.openURL(_event.row.url);
-			});
+		} else if(OPTIONS[i].action) {
+			row.addEventListener("click", OPTIONS[i].action);
 		}
 		
 		rows.push(row);
