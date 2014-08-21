@@ -1,5 +1,3 @@
-
-
 exports.tripAdd = function() {
 	var DB = Ti.Database.open("BiteBook");
 	
@@ -41,9 +39,9 @@ exports.tripRemove = function(_trip_id) {
 exports.tripGetValidId = function(_create) {
 	var DB = Ti.Database.open("BiteBook");
 	
-	var result = DB.execute("SELECT id, start FROM bb_trip ORDER BY start DESC LIMIT 1");
+	var result = DB.execute("SELECT id, start FROM bb_trip WHERE end IS NULL ORDER BY start DESC LIMIT 1");
 	
-	var trip_id,
+	var trip_id = false,
 		trip_start = 0;
 	
 	while(result.isValidRow()) {
@@ -63,6 +61,8 @@ exports.tripGetValidId = function(_create) {
 	} else {
 		var now = Math.round(new Date().getTime() / 1000);
 		var limit = (6 * 60) * 60; // 6 Hours
+		
+		Ti.API.error(now + " - " + limit + " > " + trip_start);
 		
 		if((now - limit) > trip_start) {
 			exports.tripEnd(trip_id);
@@ -277,16 +277,20 @@ exports.catchGetCountByTrip = function(_trip_id) {
 		_trip_id = exports.tripGetValidId(false);
 	}
 	
-	var DB = Ti.Database.open("BiteBook");
-	
-	var result = DB.execute("SELECT count(*) as CatchCount FROM bb_log WHERE trip_id = ? ORDER BY timestamp DESC", _trip_id);
-	
-	var count = result.fieldByName("CatchCount");
-	
-	result.close;
-	DB.close();
-	
-	return count;
+	if(_trip_id) {
+		var DB = Ti.Database.open("BiteBook");
+		
+		var result = DB.execute("SELECT count(*) as CatchCount FROM bb_log WHERE trip_id = ? ORDER BY timestamp DESC", _trip_id);
+		
+		var count = result.fieldByName("CatchCount");
+		
+		result.close;
+		DB.close();
+		
+		return count;
+	} else {
+		return 0;
+	}
 };
 
 exports.catchGetCountByLocation = function(_geo) {
