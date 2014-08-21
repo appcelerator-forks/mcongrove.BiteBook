@@ -25,6 +25,10 @@
 	},
 	textAlign: "right"
 },
+"#RowSubspecies": {
+	height: 0,
+	bottom: 0
+},
 "#Submit": {
 	backgroundColor: "#AAA",
 	color: "#FFF",

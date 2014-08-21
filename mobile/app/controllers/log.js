@@ -3,6 +3,7 @@ var App = require("core");
 
 var VALUES = {
 	species: null,
+	subspecies: null,
 	weight: {
 		pound: 0,
 		ounce: 0
@@ -13,10 +14,20 @@ var VALUES = {
 	}
 };
 
+function showSubspeciesRow() {
+	$.RowSubspecies.height = Ti.UI.SIZE;
+	$.RowSubspecies.bottom = 10;
+}
+
+function hideSubspeciesRow() {
+	$.RowSubspecies.height = 0;
+	$.RowSubspecies.bottom = 0;
+}
+
 function openPickerSpecies() {
 	var picker = Alloy.createController("ui/picker");
 	var options = [];
-	var species = App.Database.speciesGetVisible();
+	var species = App.Database.speciesGetAll();
 	
 	for(var i = 0, x = species.length; i < x; i++) {
 		options.push({
@@ -37,6 +48,46 @@ function openPickerSpecies() {
 			};
 			
 			VALUES.species = _data;
+			
+			if(App.Database.speciesHasSubspecies(_data)) {
+				showSubspeciesRow();
+			} else {
+				hideSubspeciesRow();
+			}
+		}
+		
+		$.LogWindow.remove(picker.getView());
+	});
+	
+	$.LogWindow.add(picker.getView());
+	
+	picker.open();
+}
+
+function openPickerSubspecies() {
+	var picker = Alloy.createController("ui/picker");
+	var options = [];
+	var subspecies = App.Database.subspeciesGetBySpeciesId(VALUES.species);
+	
+	for(var i = 0, x = subspecies.length; i < x; i++) {
+		options.push({
+			title: subspecies[i].name,
+			value: subspecies[i].id
+		});
+	}
+	
+	picker.setOptions(options);
+	
+	picker.setCallback(function(_data) {
+		if(_data !== false) {
+			$.ValueSubspecies.text = App.Database.subspeciesGetById(_data);
+			$.ValueSubspecies.color = "#404556";
+			$.ValueSubspecies.font = {
+				fontSize: 18,
+				fontFamily: "HelveticaNeue-Regular"
+			};
+			
+			VALUES.subspecies = _data;
 		}
 		
 		$.LogWindow.remove(picker.getView());
@@ -139,6 +190,7 @@ $.Submit.addEventListener("click", function(_event) {
 		
 		VALUES = {
 			species: null,
+			subspecies: null,
 			weight: {
 				pound: 0,
 				ounce: 0
@@ -150,14 +202,20 @@ $.Submit.addEventListener("click", function(_event) {
 		};
 		
 		$.ValueSpecies.text = "Tap to Select";
+		$.ValueSubspecies.text = "Tap to Select";
 		$.ValueWeight.text = "0 lb 0 oz";
 		$.ValueLength.text = "0 ft 0 in";
 		
 		$.ValueSpecies.color = "#666";
+		$.ValueSubspecies.color = "#666";
 		$.ValueWeight.color = "#666";
 		$.ValueLength.color = "#666";
 		
 		$.ValueSpecies.font = {
+			fontSize: 18,
+			fontFamily: "HelveticaNeue-UltraLightItalic"
+		};
+		$.ValueSubspecies.font = {
 			fontSize: 18,
 			fontFamily: "HelveticaNeue-UltraLightItalic"
 		};
@@ -169,11 +227,15 @@ $.Submit.addEventListener("click", function(_event) {
 			fontSize: 18,
 			fontFamily: "HelveticaNeue-UltraLightItalic"
 		};
+		
+		$.ValueSubspecies.height = 0;
+		$.ValueSubspecies.bottom = 0;
 	} else {
 		alert("Please select a species");
 	}
 });
 
 $.RowSpecies.addEventListener("click", openPickerSpecies);
+$.RowSubspecies.addEventListener("click", openPickerSubspecies);
 $.RowWeight.addEventListener("click", openSliderWeight);
 $.RowLength.addEventListener("click", openSliderLength);

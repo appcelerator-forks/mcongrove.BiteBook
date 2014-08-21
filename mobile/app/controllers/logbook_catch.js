@@ -22,6 +22,7 @@ function init() {
 		var _catch = CATCHES[i];
 		
 		_catch.species = App.Database.speciesGetById(_catch.species);
+		_catch.subspecies = App.Database.subspeciesGetById(_catch.subspecies);
 		
 		if(i == 0) {
 			$.Map.setRegion({
