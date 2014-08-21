@@ -1,5 +1,0 @@
-<Alloy>
-	<Window id="SettingsSpeciesWindow" title="Species List">
-		<TableView id="Table" />
-	</Window>
-</Alloy>

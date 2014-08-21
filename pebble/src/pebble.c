@@ -16,7 +16,7 @@ static void in_received_handler(DictionaryIterator *iter, void *context) {
 }
 
 static void in_dropped_handler(AppMessageResult reason, void *context) {
-	
+	APP_LOG(APP_LOG_LEVEL_INFO, "Message Received:Failure");
 }
 
 void out_sent_handler(DictionaryIterator *sent, void *context) {
@@ -25,6 +25,7 @@ void out_sent_handler(DictionaryIterator *sent, void *context) {
 
 void out_failed_handler(DictionaryIterator *send, AppMessageResult reason, void *context) {
 	char* message;
+	
 	switch(reason) {
 		case APP_MSG_OK:
 			message = "APP_MSG_OK";
