@@ -1,7 +1,10 @@
 // App bootstrap
 var App = require("core");
 
+var args = arguments[0] || {};
+
 var VALUES = {
+	id: null,
 	species: null,
 	subspecies: null,
 	weight: {
@@ -13,6 +16,49 @@ var VALUES = {
 		inch: 0
 	}
 };
+
+function init() {
+	var _catch = App.Database.catchGetById(args.id);
+	
+	VALUES = {
+		id: args.id,
+		species: _catch.species,
+		subspecies: _catch.subspecies,
+		weight: _catch.weight,
+		length: _catch.length
+	};
+	
+	$.ValueSpecies.text = App.Database.speciesGetById(VALUES.species);
+	$.ValueWeight.text = VALUES.weight.pound + " lb " + VALUES.weight.ounce + " oz";
+	$.ValueLength.text = VALUES.length.feet + " ft " + VALUES.length.inch + " in";
+	
+	if(VALUES.subspecies) {
+		$.ValueSubspecies.text = App.Database.subspeciesGetById(VALUES.subspecies);
+		
+		showSubspeciesRow();
+	}
+	
+	$.ValueSpecies.color = "#404556";
+	$.ValueSubspecies.color = "#404556";
+	$.ValueWeight.color = "#404556";
+	$.ValueLength.color = "#404556";
+	$.ValueSpecies.font = {
+		fontSize: 18,
+		fontFamily: "HelveticaNeue-Regular"
+	};
+	$.ValueSubspecies.font = {
+		fontSize: 18,
+		fontFamily: "HelveticaNeue-Regular"
+	};
+	$.ValueWeight.font = {
+		fontSize: 18,
+		fontFamily: "HelveticaNeue-Regular"
+	};
+	$.ValueLength.font = {
+		fontSize: 18,
+		fontFamily: "HelveticaNeue-Regular"
+	};
+}
 
 function showSubspeciesRow() {
 	$.RowSubspecies.height = Ti.UI.SIZE;
@@ -62,10 +108,10 @@ function openPickerSpecies() {
 			}
 		}
 		
-		$.LogWindow.remove(picker.getView());
+		$.CatchDetailWindow.remove(picker.getView());
 	});
 	
-	$.LogWindow.add(picker.getView());
+	$.CatchDetailWindow.add(picker.getView());
 	
 	picker.open();
 }
@@ -96,10 +142,10 @@ function openPickerSubspecies() {
 			VALUES.subspecies = _data;
 		}
 		
-		$.LogWindow.remove(picker.getView());
+		$.CatchDetailWindow.remove(picker.getView());
 	});
 	
-	$.LogWindow.add(picker.getView());
+	$.CatchDetailWindow.add(picker.getView());
 	
 	picker.open();
 }
@@ -136,10 +182,10 @@ function openSliderWeight() {
 			};
 		}
 		
-		$.LogWindow.remove(slider.getView());
+		$.CatchDetailWindow.remove(slider.getView());
 	});
 	
-	$.LogWindow.add(slider.getView());
+	$.CatchDetailWindow.add(slider.getView());
 	
 	slider.open();
 }
@@ -176,66 +222,21 @@ function openSliderLength() {
 			};
 		}
 		
-		$.LogWindow.remove(slider.getView());
+		$.CatchDetailWindow.remove(slider.getView());
 	});
 	
-	$.LogWindow.add(slider.getView());
+	$.CatchDetailWindow.add(slider.getView());
 	
 	slider.open();
 }
 
+init();
+
 $.Submit.addEventListener("click", function(_event) {
 	if(VALUES.species !== null) {
-		App.Database.catchAdd(VALUES);
+		App.Database.catchEdit(VALUES);
 		
-		Alloy.createWidget("com.mcongrove.toast", null, {
-			text: "Catch Logged",
-			duration: 2000,
-			view: $.LogWindow
-		});
-		
-		VALUES = {
-			species: null,
-			subspecies: null,
-			weight: {
-				pound: 0,
-				ounce: 0
-			},
-			length: {
-				feet: 0,
-				inch: 0
-			}
-		};
-		
-		$.ValueSpecies.text = "Tap to Select";
-		$.ValueSubspecies.text = "Tap to Select";
-		$.ValueWeight.text = "0 lb 0 oz";
-		$.ValueLength.text = "0 ft 0 in";
-		
-		$.ValueSpecies.color = "#666";
-		$.ValueSubspecies.color = "#666";
-		$.ValueWeight.color = "#666";
-		$.ValueLength.color = "#666";
-		
-		$.ValueSpecies.font = {
-			fontSize: 18,
-			fontFamily: "HelveticaNeue-UltraLightItalic"
-		};
-		$.ValueSubspecies.font = {
-			fontSize: 18,
-			fontFamily: "HelveticaNeue-UltraLightItalic"
-		};
-		$.ValueWeight.font = {
-			fontSize: 18,
-			fontFamily: "HelveticaNeue-UltraLightItalic"
-		};
-		$.ValueLength.font = {
-			fontSize: 18,
-			fontFamily: "HelveticaNeue-UltraLightItalic"
-		};
-		
-		$.ValueSubspecies.height = 0;
-		$.ValueSubspecies.bottom = 0;
+		$.CatchDetailWindow.close();
 	} else {
 		alert("Please select a species");
 	}

@@ -6,20 +6,25 @@
 	top: 0,
 	bottom: 10,
 	backgroundColor: "#EEE",
-	layout: "vertical",
 	height: Ti.UI.SIZE
 },
+".meta": {
+	layout: "vertical",
+	right: 28,
+	height: Ti.UI.SIZE
+}
 "#Species": {
 	top: 20,
-	right: 10,
+	right: 0,
 	left: 10
 },
 ".stats": {
 	left: 10,
-	right: 10,
+	right: 0,
 	top: 5,
 	height: Ti.UI.SIZE,
-	bottom: 20
+	bottom: 20,
+	layout: "horizontal"
 },
 "#Time": {
 	top: 0,
@@ -31,16 +36,9 @@
 		fontFamily: "HelveticaNeue-Bold"
 	}
 },
-".right": {
-	layout: "horizontal",
-	width: Ti.UI.SIZE,
-	height: Ti.UI.SIZE,
-	right: 0,
-	top: 0
-},
 "#Weight": {
 	top: 0,
-	left: 0,
+	left: 20,
 	width: Ti.UI.SIZE,
 	height: Ti.UI.SIZE,
 	font: {
@@ -50,12 +48,17 @@
 },
 "#Length": {
 	top: 0,
-	left: 10,
+	left: 20,
 	width: Ti.UI.SIZE,
 	height: Ti.UI.SIZE,
 	font: {
 		fontSize: 12,
 		fontFamily: "HelveticaNeue-Bold"
-	},
-	textAlign: "right"
+	}
+},
+".arrow": {
+	width: 8,
+	height: 13,
+	right: 10,
+	image: "images/icon_child.png"
 }

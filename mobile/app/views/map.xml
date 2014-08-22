@@ -1,5 +1,9 @@
 <Alloy>
 	<Window id="MapWindow" title="Catch Map">
+		<RightNavButton>
+			<Button image="images/icon_settings.png" onClick="App.openSettings" />
+		</RightNavButton>
+		
 		<Module id="Map" module="ti.map" method="createView" />
 	</Window>
 </Alloy>

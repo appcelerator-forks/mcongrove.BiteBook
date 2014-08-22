@@ -14,7 +14,7 @@
 }
 "#Date": {
 	top: 20,
-	right: 28,
+	right: 48,
 	left: 10
 },
 "#Species": {

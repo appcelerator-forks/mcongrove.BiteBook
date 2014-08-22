@@ -16,6 +16,7 @@ function init() {
 	
 	$.LogbookCatchWindow.title = date.format("MMMM Do, YYYY");
 	
+	$.Map.removeAllAnnotations();
 	$.Map.setMapType(Alloy.Globals.Map.SATELLITE_TYPE);
 	
 	for(var i = 0, x = CATCHES.length; i < x; i++) {
@@ -47,6 +48,12 @@ function init() {
 		
 		row.catch_id = _catch.id;
 		
+		row.addEventListener("click", function(_event) {
+			var catch_detail = Alloy.createController("catch_detail", { id: _event.row.catch_id }).getView();
+			
+			App.TabGroup.activeTab.open(catch_detail);
+		});
+		
 		rows.push(row);
 	}
 	
@@ -56,5 +63,7 @@ function init() {
 $.Table.addEventListener("delete", function(_event) {
 	App.Database.catchRemove(_event.row.catch_id, TRIP.id);
 });
+
+Ti.App.addEventListener("BB_EDIT", init);
 
 init();

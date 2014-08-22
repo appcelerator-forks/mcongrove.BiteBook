@@ -1,16 +1,17 @@
 <Alloy>
 	<TableViewRow id="Row">
 		<View class="container">
-			<Label id="Species" />
-			
-			<View class="stats">
-				<Label id="Time" />
+			<View class="meta">
+				<Label id="Species" />
 				
-				<View class="right">
+				<View class="stats">
+					<Label id="Time" />
 					<Label id="Weight" />
 					<Label id="Length" />
 				</View>
 			</View>
+			
+			<ImageView class="arrow" />
 		</View>
 	</TableViewRow>
 </Alloy>

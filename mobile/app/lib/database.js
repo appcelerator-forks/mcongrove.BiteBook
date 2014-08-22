@@ -179,6 +179,22 @@ exports.catchAdd = function(_catch) {
 	}
 };
 
+exports.catchEdit = function(_catch) {
+	var DB = Ti.Database.open("BiteBook");
+	
+	DB.execute("UPDATE bb_log SET species = ?, subspecies = ?, weight = ?, length = ? WHERE id = ?",
+		_catch.species,
+		_catch.subspecies,
+		JSON.stringify(_catch.weight),
+		JSON.stringify(_catch.length),
+		_catch.id
+	);
+	
+	DB.close();
+	
+	Ti.App.fireEvent("BB_EDIT");
+};
+
 exports.catchRemove = function(_catch_id, _trip_id) {
 	var DB = Ti.Database.open("BiteBook");
 	
