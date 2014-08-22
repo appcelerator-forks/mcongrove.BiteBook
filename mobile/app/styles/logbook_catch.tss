@@ -1,14 +1,40 @@
-"Window": {
+".container": {
 	layout: "vertical"
 },
-"#Map": {
-	animate: true,
-	regionFit: true,
-	userLocation: true,
-	top: 0,
-	left: 0,
-	height: 150
+".row": {
+	backgroundColor: "#EEE",
+	height: Ti.UI.SIZE,
+	bottom: 10,
+	right: 0,
+	left: 0
 },
-"TableView": {
-	separatorStyle: Ti.UI.iPhone.TableViewSeparatorStyle.NONE
+".key": {
+	top: 20,
+	bottom: 20,
+	left: 10,
+	width: Ti.UI.SIZE
+},
+".value": {
+	top: 20,
+	right: 10,
+	bottom: 20,
+	width: Ti.UI.SIZE,
+	color: "#666",
+	font: {
+		fontFamily: "HelveticaNeue-UltraLightItalic"
+	},
+	textAlign: "right"
+},
+"#RowSubspecies": {
+	height: 0,
+	bottom: 0
+},
+"#Submit": {
+	backgroundColor: "#AAA",
+	color: "#FFF",
+	height: 52,
+	top: 0,
+	right: 0,
+	left: 0,
+	textAlign: "center"
 }

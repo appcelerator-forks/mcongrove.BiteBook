@@ -1,0 +1,7 @@
+<Alloy>
+	<Window id="LogbookCatchWindow">
+		<Module id="Map" module="ti.map" method="createView" />
+		
+		<TableView id="Table" />
+	</Window>
+</Alloy>

@@ -12,7 +12,7 @@ function init() {
 		row.trip_id = trips[i].id;
 		
 		row.addEventListener("click", function(_event) {
-			var trip = Alloy.createController("logbook_catch", { id: _event.row.trip_id }).getView();
+			var trip = Alloy.createController("logbook_trip", { id: _event.row.trip_id }).getView();
 			
 			App.TabGroup.activeTab.open(trip);
 		});

@@ -1,69 +1,248 @@
 // App bootstrap
 var App = require("core");
-	Alloy.Globals.Map = require("ti.map"),
-	Moment = require("alloy/moment");
 
 var args = arguments[0] || {};
 
-var TRIP, CATCHES;
+var VALUES = {
+	id: null,
+	species: null,
+	subspecies: null,
+	weight: {
+		pound: 0,
+		ounce: 0
+	},
+	length: {
+		feet: 0,
+		inch: 0
+	}
+};
 
 function init() {
-	TRIP = App.Database.tripGetById(args.id);
-	CATCHES = App.Database.catchGetByTripId(TRIP.id);
+	var _catch = App.Database.catchGetById(args.id);
 	
-	var date = Moment.unix(TRIP.start);
-	var rows = [];
+	VALUES = {
+		id: args.id,
+		species: _catch.species,
+		subspecies: _catch.subspecies,
+		weight: _catch.weight,
+		length: _catch.length
+	};
 	
-	$.LogbookCatchWindow.title = date.format("MMMM Do, YYYY");
+	$.ValueSpecies.text = App.Database.speciesGetById(VALUES.species);
+	$.ValueWeight.text = VALUES.weight.pound + " lb " + VALUES.weight.ounce + " oz";
+	$.ValueLength.text = VALUES.length.feet + " ft " + VALUES.length.inch + " in";
 	
-	$.Map.removeAllAnnotations();
-	$.Map.setMapType(Alloy.Globals.Map.SATELLITE_TYPE);
-	
-	for(var i = 0, x = CATCHES.length; i < x; i++) {
-		var _catch = CATCHES[i];
+	if(VALUES.subspecies) {
+		$.ValueSubspecies.text = App.Database.subspeciesGetById(VALUES.subspecies);
 		
-		_catch.species = App.Database.speciesGetById(_catch.species);
-		_catch.subspecies = App.Database.subspeciesGetById(_catch.subspecies);
-		
-		if(i == 0) {
-			$.Map.setRegion({
-				latitude: _catch.latitude,
-				longitude: _catch.longitude,
-				latitudeDelta: 0.01,
-				longitudeDelta: 0.01
-			});
-		}
-		
-		var item = Alloy.Globals.Map.createAnnotation({
-			latitude: _catch.latitude,
-			longitude: _catch.longitude,
-			title: _catch.species,
-			subtitle: _catch.weight.pound + " lb " + _catch.weight.ounce + " oz",
-			image: "images/icon_annotation.png"
-		});
-		
-		$.Map.addAnnotation(item);
-		
-		var row = Alloy.createController("logbook_catch_row", _catch).getView();
-		
-		row.catch_id = _catch.id;
-		
-		row.addEventListener("click", function(_event) {
-			var catch_detail = Alloy.createController("catch_detail", { id: _event.row.catch_id }).getView();
-			
-			App.TabGroup.activeTab.open(catch_detail);
-		});
-		
-		rows.push(row);
+		showSubspeciesRow();
 	}
 	
-	$.Table.setData(rows);
+	$.ValueSpecies.color = "#404556";
+	$.ValueSubspecies.color = "#404556";
+	$.ValueWeight.color = "#404556";
+	$.ValueLength.color = "#404556";
+	$.ValueSpecies.font = {
+		fontSize: 18,
+		fontFamily: "HelveticaNeue-Regular"
+	};
+	$.ValueSubspecies.font = {
+		fontSize: 18,
+		fontFamily: "HelveticaNeue-Regular"
+	};
+	$.ValueWeight.font = {
+		fontSize: 18,
+		fontFamily: "HelveticaNeue-Regular"
+	};
+	$.ValueLength.font = {
+		fontSize: 18,
+		fontFamily: "HelveticaNeue-Regular"
+	};
 }
-		
-$.Table.addEventListener("delete", function(_event) {
-	App.Database.catchRemove(_event.row.catch_id, TRIP.id);
-});
 
-Ti.App.addEventListener("BB_EDIT", init);
+function showSubspeciesRow() {
+	$.RowSubspecies.height = Ti.UI.SIZE;
+	$.RowSubspecies.bottom = 10;
+}
+
+function hideSubspeciesRow() {
+	$.RowSubspecies.height = 0;
+	$.RowSubspecies.bottom = 0;
+}
+
+function openPickerSpecies() {
+	var picker = Alloy.createController("ui/picker");
+	var options = [];
+	var species = App.Database.speciesGetAll();
+	
+	for(var i = 0, x = species.length; i < x; i++) {
+		options.push({
+			title: species[i].name,
+			value: species[i].id
+		});
+	}
+	
+	picker.setOptions(options);
+	
+	picker.setCallback(function(_data) {
+		if(_data !== false) {
+			$.ValueSpecies.text = App.Database.speciesGetById(_data);
+			$.ValueSubspecies.text = "Tap to Select";
+			$.ValueSpecies.color = "#404556";
+			$.ValueSubspecies.color = "#666";
+			$.ValueSpecies.font = {
+				fontSize: 18,
+				fontFamily: "HelveticaNeue-Regular"
+			};
+			$.ValueSubspecies.font = {
+				fontSize: 18,
+				fontFamily: "HelveticaNeue-UltraLightItalic"
+			};
+			
+			VALUES.species = _data;
+			
+			if(App.Database.speciesHasSubspecies(_data)) {
+				showSubspeciesRow();
+			} else {
+				hideSubspeciesRow();
+			}
+		}
+		
+		$.CatchDetailWindow.remove(picker.getView());
+	});
+	
+	$.CatchDetailWindow.add(picker.getView());
+	
+	picker.open();
+}
+
+function openPickerSubspecies() {
+	var picker = Alloy.createController("ui/picker");
+	var options = [];
+	var subspecies = App.Database.subspeciesGetBySpeciesId(VALUES.species);
+	
+	for(var i = 0, x = subspecies.length; i < x; i++) {
+		options.push({
+			title: subspecies[i].name,
+			value: subspecies[i].id
+		});
+	}
+	
+	picker.setOptions(options);
+	
+	picker.setCallback(function(_data) {
+		if(_data !== false) {
+			$.ValueSubspecies.text = App.Database.subspeciesGetById(_data);
+			$.ValueSubspecies.color = "#404556";
+			$.ValueSubspecies.font = {
+				fontSize: 18,
+				fontFamily: "HelveticaNeue-Regular"
+			};
+			
+			VALUES.subspecies = _data;
+		}
+		
+		$.CatchDetailWindow.remove(picker.getView());
+	});
+	
+	$.CatchDetailWindow.add(picker.getView());
+	
+	picker.open();
+}
+
+function openSliderWeight() {
+	var slider = Alloy.createController("ui/slider");
+	var options = {
+		top: {
+			min: 0,
+			max: 20,
+			segment: 5,
+			label: " lb"
+		},
+		bottom: {
+			min: 0,
+			max: 15,
+			segment: 8,
+			label: " oz"
+		}
+	};
+	
+	slider.setOptions(options);
+	
+	slider.setCallback(function(_data) {
+		if(_data !== false) {
+			VALUES.weight.pound = _data.top;
+			VALUES.weight.ounce = _data.bottom;
+			
+			$.ValueWeight.text = VALUES.weight.pound + " lb " + VALUES.weight.ounce + " oz";
+			$.ValueWeight.color = "#404556";
+			$.ValueWeight.font = {
+				fontSize: 18,
+				fontFamily: "HelveticaNeue-Regular"
+			};
+		}
+		
+		$.CatchDetailWindow.remove(slider.getView());
+	});
+	
+	$.CatchDetailWindow.add(slider.getView());
+	
+	slider.open();
+}
+
+function openSliderLength() {
+	var slider = Alloy.createController("ui/slider");
+	var options = {
+		top: {
+			min: 0,
+			max: 5,
+			segment: 5,
+			label: " ft"
+		},
+		bottom: {
+			min: 0,
+			max: 11,
+			segment: 6,
+			label: " in"
+		}
+	};
+	
+	slider.setOptions(options);
+	
+	slider.setCallback(function(_data) {
+		if(_data !== false) {
+			VALUES.length.feet = _data.top;
+			VALUES.length.inch = _data.bottom;
+			
+			$.ValueLength.text = VALUES.length.feet + " ft " + VALUES.length.inch + " in";
+			$.ValueLength.color = "#404556";
+			$.ValueLength.font = {
+				fontSize: 18,
+				fontFamily: "HelveticaNeue-Regular"
+			};
+		}
+		
+		$.CatchDetailWindow.remove(slider.getView());
+	});
+	
+	$.CatchDetailWindow.add(slider.getView());
+	
+	slider.open();
+}
 
 init();
+
+$.Submit.addEventListener("click", function(_event) {
+	if(VALUES.species !== null) {
+		App.Database.catchEdit(VALUES);
+		
+		$.CatchDetailWindow.close();
+	} else {
+		alert("Please select a species");
+	}
+});
+
+$.RowSpecies.addEventListener("click", openPickerSpecies);
+$.RowSubspecies.addEventListener("click", openPickerSubspecies);
+$.RowWeight.addEventListener("click", openSliderWeight);
+$.RowLength.addEventListener("click", openSliderLength);
