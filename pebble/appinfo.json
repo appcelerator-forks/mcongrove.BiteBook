@@ -42,6 +42,11 @@
 			},
 			{
 				"type": "png",
+				"name": "SYNCING_WHITE",
+				"file": "images/syncing.png"
+			},
+			{
+				"type": "png",
 				"name": "WHITE_LINE_FULL",
 				"file": "images/white_line_tall.png"
 			},

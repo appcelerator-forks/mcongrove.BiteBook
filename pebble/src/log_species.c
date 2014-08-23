@@ -114,7 +114,7 @@ void show_log_species(void) {
 	initialise_ui();
 	
 	window_set_window_handlers(s_window, (WindowHandlers) {
-		.unload = handle_window_unload,
+		.unload = handle_window_unload
 	});
 	
 	window_stack_push(s_window, true);

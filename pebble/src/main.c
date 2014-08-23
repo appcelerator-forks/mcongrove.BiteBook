@@ -151,7 +151,7 @@ void show_main(void) {
 	initialise_ui();
 	
 	window_set_window_handlers(s_window, (WindowHandlers) {
-		.unload = handle_window_unload,
+		.unload = handle_window_unload
 	});
 	
 	window_set_click_config_provider(s_window, config_provider);

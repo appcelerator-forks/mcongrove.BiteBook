@@ -2,7 +2,7 @@
 #include <pebble.h>
 #include "config.c"
 #include "log_weight.h"
-#include "log_complete.h"
+#include "syncing.h"
 
 static Window *s_window;
 static GFont s_res_bitham_30_black;
@@ -158,7 +158,7 @@ static void select_single_click_handler(ClickRecognizerRef recognizer, void *con
 		persist_write_int(KEY_LOG_LENGTH_FEET, LOG_FEET);
 		persist_write_int(KEY_LOG_LENGTH_INCH, LOG_INCH);
 		
-		show_log_complete();
+		show_syncing();
 	}
 }
 
@@ -183,7 +183,7 @@ void show_log_length(void) {
 	initialise_ui();
 	
 	window_set_window_handlers(s_window, (WindowHandlers) {
-		.unload = handle_window_unload,
+		.unload = handle_window_unload
 	});
 	
 	window_set_click_config_provider(s_window, config_provider);

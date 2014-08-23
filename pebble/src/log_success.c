@@ -1,7 +1,7 @@
-#include "log_complete.h"
+#include "log_success.h"
 #include <pebble.h>
 #include "config.c"
-#include "log_length.h"
+#include "syncing.h"
 
 static Window *s_window;
 static GFont s_res_gothic_14;
@@ -47,7 +47,7 @@ static void initialise_ui(void) {
 	text_layer_set_font(s_text_notice, s_res_gothic_14);
 	layer_add_child(window_get_root_layer(s_window), (Layer *)s_text_notice);
 	
-	s_text_species = text_layer_create(GRect(0, 55, 144, 30));
+	s_text_species = text_layer_create(GRect(0, 55, 144, 32));
 	text_layer_set_background_color(s_text_species, GColorClear);
 	text_layer_set_text_color(s_text_species, GColorWhite);
 	text_layer_set_text(s_text_species, "");
@@ -140,66 +140,36 @@ static void set_length() {
 	text_layer_set_text(s_text_length, lengthText);
 }
 
-/** App Comms **/
-
-static void send_to_phone() {	
-	DictionaryIterator *iter;
-	app_message_outbox_begin(&iter);
-	
-	if(iter == NULL) {
-		return;
-	}
-	
-	static char JSON[64];
-	
-	strcpy(JSON, "{\"S\":");
-	strcat(JSON, LOG_SPECIES_ID);
-	strcat(JSON, ",\"WP\":");
-	strcat(JSON, poundText);
-	strcat(JSON, ",\"WO\":");
-	strcat(JSON, ounceText);
-	strcat(JSON, ",\"LF\":");
-	strcat(JSON, feetText);
-	strcat(JSON, ",\"LI\":");
-	strcat(JSON, inchText);
-	strcat(JSON, "}");
-	
-	dict_write_cstring(iter, 0, JSON);
-	dict_write_end(iter);
-	
-	app_message_outbox_send();
-}
-
 /** Event Handlers **/
 
 static void timer_callback(void *data) {
-	app_timer_cancel(s_timer);
-	
-	hide_log_complete();
+	hide_log_success();
 }
 
 /** Window Management **/
 
-void show_log_complete(void) {
+void show_log_success(void) {
 	initialise_ui();
 	
 	window_set_window_handlers(s_window, (WindowHandlers) {
-		.unload = handle_window_unload,
+		.unload = handle_window_unload
 	});
 	
-	window_stack_push(s_window, true);
+	window_stack_push(s_window, false);
 	
-	hide_log_length();
+	hide_syncing();
 	
 	set_species();
 	set_weight();
 	set_length();
 	
-	send_to_phone();
-	
 	s_timer = app_timer_register(3000, timer_callback, NULL);
+	
+	static const uint32_t const vibe_segments[] = { 100, 100 };
+	VibePattern vibe_pattern = { .durations = vibe_segments, .num_segments = ARRAY_LENGTH(vibe_segments) };
+	vibes_enqueue_custom_pattern(vibe_pattern);
 }
 
-void hide_log_complete(void) {
+void hide_log_success(void) {
 	window_stack_remove(s_window, true);
 }
