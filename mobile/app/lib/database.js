@@ -423,7 +423,7 @@ exports.upgradeDatabase = function() {
 	
 	var DB = Ti.Database.open("BiteBook");
 	
-	DB.file.setRemoteBackup(false);
+	DB.file.setRemoteBackup(true);
 	
 	if(installed == 0) {
 		DB.execute("DROP TABLE IF EXISTS bb_log");
