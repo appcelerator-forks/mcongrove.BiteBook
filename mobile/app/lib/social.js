@@ -28,7 +28,7 @@ if(OS_IOS) {
 			var email = Ti.UI.createEmailDialog();
 
 			email.html = true;
-			email.messageBody = "Check out this great app I found called BiteBook; it's simple fish logger, and even supports the Pebble Smartwatch!<br /><br /><a href='http://www.bitebook.net'>BiteBook.net</a>";
+			email.messageBody = "Check out this great app I found called BiteBook; it's a simple fish logger, and even supports the Pebble Smartwatch!<br /><br /><a href='http://www.bitebook.net'>BiteBook.net</a>";
 
 			email.open();
 		}
@@ -41,7 +41,7 @@ if(OS_IOS) {
 	exports.twitter = function() {
 		if(exports.twitterSupported) {
 			SOCIAL.twitter({
-				text: "Check out this great app I found called BiteBook; it's simple fish logger, and even supports the Pebble Smartwatch!",
+				text: "Check out this great app I found called BiteBook; it's a simple fish logger, and even supports the Pebble Smartwatch!",
 				url: "http://www.bitebook.net"
 			});
 		}
@@ -53,7 +53,7 @@ if(OS_IOS) {
 	 */
 	exports.shareActivityView = function() {
 		SOCIAL.activityView({
-			text: "Check out this great app I found called BiteBook; it's simple fish logger, and even supports the Pebble Smartwatch! BiteBook.net",
+			text: "Check out this great app I found called BiteBook; it's a simple fish logger, and even supports the Pebble Smartwatch! BiteBook.net",
 			removeIcons: "print,copy,contact,camera,weibo"
 		});
 	};
@@ -110,7 +110,7 @@ exports.share = function() {
 			type: "text/plain"
 		});
 
-		intent.putExtra(Ti.Android.EXTRA_TEXT, "Check out this great app I found called BiteBook; it's simple fish logger, and even supports the Pebble Smartwatch! BiteBook.net");
+		intent.putExtra(Ti.Android.EXTRA_TEXT, "Check out this great app I found called BiteBook; it's a simple fish logger, and even supports the Pebble Smartwatch! BiteBook.net");
 
 		Ti.Android.currentActivity.startActivity(intent);
 	}

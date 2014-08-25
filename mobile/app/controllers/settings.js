@@ -10,8 +10,7 @@ var OPTIONS = [
 	{
 		title: "Download BiteBook on Pebble",
 		action: function() {
-			Ti.Platform.openURL("http://www.bitebook.net/bitebook.pbw");
-			//Ti.Platform.openURL("pebble://appstore/53ee756fbe4dd4f5fe0001cb");
+			Ti.Platform.openURL("pebble://appstore/53ee756fbe4dd4f5fe0001cb");
 		}
 	},
 	{
