@@ -1,3 +1,5 @@
+var DatabaseVersion = 1;
+
 exports.tripAdd = function() {
 	var DB = Ti.Database.open("BiteBook");
 	
@@ -412,8 +414,10 @@ exports.subspeciesGetById = function(_subspecies_id) {
 	return name;
 };
 
-exports.populate = function() {
-	if(Ti.App.Properties.getBool("DB_INSTALLED", false)) {
+exports.upgradeDatabase = function() {
+	var installed = Ti.App.Properties.getInt("BB_DATABASE_VERSION", 0);
+	
+	if(installed >= DatabaseVersion) {
 		return;
 	}
 	
@@ -421,71 +425,75 @@ exports.populate = function() {
 	
 	DB.file.setRemoteBackup(false);
 	
-	DB.execute("DROP TABLE IF EXISTS bb_log");
-	DB.execute("DROP TABLE IF EXISTS bb_trip");
-	DB.execute("DROP TABLE IF EXISTS bb_species");
-	DB.execute("DROP TABLE IF EXISTS bb_subspecies");
-	DB.execute("CREATE TABLE bb_log (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE, timestamp INTEGER NOT NULL, trip_id INTEGER NOT NULL, species INTEGER NOT NULL, subspecies INTEGER, weight BLOB, length BLOB, latitude INTEGER, longitude INTEGER)");
-	DB.execute("CREATE TABLE bb_trip (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE, start INTEGER NOT NULL, end INTEGER DEFAULT (0) )");
-	DB.execute("CREATE TABLE bb_species (id INTEGER PRIMARY KEY NOT NULL UNIQUE, name TEXT NOT NULL)");
-	DB.execute("CREATE TABLE bb_subspecies (id INTEGER PRIMARY KEY NOT NULL UNIQUE, parent_id INTEGER NOT NULL, name TEXT NOT NULL)");
-	DB.execute("BEGIN TRANSACTION");
-	DB.execute("INSERT INTO bb_species VALUES(0,'Alewife')");
-	DB.execute("INSERT INTO bb_species VALUES(1,'Bass')");
-	DB.execute("INSERT INTO bb_species VALUES(2,'Bluegill')");
-	DB.execute("INSERT INTO bb_species VALUES(3,'Bowfin')");
-	DB.execute("INSERT INTO bb_species VALUES(4,'Bullhead')");
-	DB.execute("INSERT INTO bb_species VALUES(5,'Carp')");
-	DB.execute("INSERT INTO bb_species VALUES(6,'Catfish')");
-	DB.execute("INSERT INTO bb_species VALUES(7,'Crappie')");
-	DB.execute("INSERT INTO bb_species VALUES(8,'Drum')");
-	DB.execute("INSERT INTO bb_species VALUES(9,'Gar')");
-	DB.execute("INSERT INTO bb_species VALUES(10,'Muskellunge')");
-	DB.execute("INSERT INTO bb_species VALUES(11,'Perch')");
-	DB.execute("INSERT INTO bb_species VALUES(12,'Pickerel')");
-	DB.execute("INSERT INTO bb_species VALUES(13,'Pike')");
-	DB.execute("INSERT INTO bb_species VALUES(14,'Shad')");
-	DB.execute("INSERT INTO bb_species VALUES(15,'Sunfish')");
-	DB.execute("INSERT INTO bb_species VALUES(16,'Trout')");
-	DB.execute("INSERT INTO bb_species VALUES(17,'Walleye')");
-	DB.execute("INSERT INTO bb_species VALUES(18,'Warmouth')");
-	DB.execute("INSERT INTO bb_subspecies VALUES(0,1,'Hybrid')");
-	DB.execute("INSERT INTO bb_subspecies VALUES(1,1,'Largemouth')");
-	DB.execute("INSERT INTO bb_subspecies VALUES(2,1,'Redeye')");
-	DB.execute("INSERT INTO bb_subspecies VALUES(3,1,'Rock')");
-	DB.execute("INSERT INTO bb_subspecies VALUES(4,1,'Smallmouth')");
-	DB.execute("INSERT INTO bb_subspecies VALUES(5,1,'Spotted')");
-	DB.execute("INSERT INTO bb_subspecies VALUES(6,1,'Striped')");
-	DB.execute("INSERT INTO bb_subspecies VALUES(7,1,'White')");
-	DB.execute("INSERT INTO bb_subspecies VALUES(8,5,'Common')");
-	DB.execute("INSERT INTO bb_subspecies VALUES(9,5,'Grass')");
-	DB.execute("INSERT INTO bb_subspecies VALUES(10,6,'Blue')");
-	DB.execute("INSERT INTO bb_subspecies VALUES(11,6,'Bullhead')");
-	DB.execute("INSERT INTO bb_subspecies VALUES(12,6,'Channel')");
-	DB.execute("INSERT INTO bb_subspecies VALUES(13,6,'Flathead')");
-	DB.execute("INSERT INTO bb_subspecies VALUES(14,6,'White')");
-	DB.execute("INSERT INTO bb_subspecies VALUES(15,7,'Black')");
-	DB.execute("INSERT INTO bb_subspecies VALUES(16,7,'White')");
-	DB.execute("INSERT INTO bb_subspecies VALUES(17,11,'White')");
-	DB.execute("INSERT INTO bb_subspecies VALUES(18,11,'Yellow')");
-	DB.execute("INSERT INTO bb_subspecies VALUES(19,12,'Chain')");
-	DB.execute("INSERT INTO bb_subspecies VALUES(20,12,'Redfin')");
-	DB.execute("INSERT INTO bb_subspecies VALUES(21,14,'American')");
-	DB.execute("INSERT INTO bb_subspecies VALUES(22,14,'Gizzard')");
-	DB.execute("INSERT INTO bb_subspecies VALUES(23,14,'Hickory')");
-	DB.execute("INSERT INTO bb_subspecies VALUES(24,14,'Threadfin')");
-	DB.execute("INSERT INTO bb_subspecies VALUES(25,15,'Green')");
-	DB.execute("INSERT INTO bb_subspecies VALUES(26,15,'Redbreast')");
-	DB.execute("INSERT INTO bb_subspecies VALUES(27,15,'Redear')");
-	DB.execute("INSERT INTO bb_subspecies VALUES(28,15,'Spotted')");
-	DB.execute("INSERT INTO bb_subspecies VALUES(29,16,'Brook')");
-	DB.execute("INSERT INTO bb_subspecies VALUES(30,16,'Brown')");
-	DB.execute("INSERT INTO bb_subspecies VALUES(31,16,'Rainbow')");
-	DB.execute("COMMIT");
+	if(installed == 0) {
+		DB.execute("DROP TABLE IF EXISTS bb_log");
+		DB.execute("DROP TABLE IF EXISTS bb_trip");
+		DB.execute("DROP TABLE IF EXISTS bb_species");
+		DB.execute("DROP TABLE IF EXISTS bb_subspecies");
+		DB.execute("CREATE TABLE bb_log (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE, timestamp INTEGER NOT NULL, trip_id INTEGER NOT NULL, species INTEGER NOT NULL, subspecies INTEGER, weight BLOB, length BLOB, latitude INTEGER, longitude INTEGER)");
+		DB.execute("CREATE TABLE bb_trip (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE, start INTEGER NOT NULL, end INTEGER DEFAULT (0) )");
+		DB.execute("CREATE TABLE bb_species (id INTEGER PRIMARY KEY NOT NULL UNIQUE, name TEXT NOT NULL)");
+		DB.execute("CREATE TABLE bb_subspecies (id INTEGER PRIMARY KEY NOT NULL UNIQUE, parent_id INTEGER NOT NULL, name TEXT NOT NULL)");
+		DB.execute("BEGIN TRANSACTION");
+		DB.execute("INSERT INTO bb_species VALUES(0,'Alewife')");
+		DB.execute("INSERT INTO bb_species VALUES(1,'Bass')");
+		DB.execute("INSERT INTO bb_species VALUES(2,'Bluegill')");
+		DB.execute("INSERT INTO bb_species VALUES(3,'Bowfin')");
+		DB.execute("INSERT INTO bb_species VALUES(4,'Bullhead')");
+		DB.execute("INSERT INTO bb_species VALUES(5,'Carp')");
+		DB.execute("INSERT INTO bb_species VALUES(6,'Catfish')");
+		DB.execute("INSERT INTO bb_species VALUES(7,'Crappie')");
+		DB.execute("INSERT INTO bb_species VALUES(8,'Drum')");
+		DB.execute("INSERT INTO bb_species VALUES(9,'Gar')");
+		DB.execute("INSERT INTO bb_species VALUES(10,'Muskellunge')");
+		DB.execute("INSERT INTO bb_species VALUES(11,'Perch')");
+		DB.execute("INSERT INTO bb_species VALUES(12,'Pickerel')");
+		DB.execute("INSERT INTO bb_species VALUES(13,'Pike')");
+		DB.execute("INSERT INTO bb_species VALUES(14,'Shad')");
+		DB.execute("INSERT INTO bb_species VALUES(15,'Sunfish')");
+		DB.execute("INSERT INTO bb_species VALUES(16,'Trout')");
+		DB.execute("INSERT INTO bb_species VALUES(17,'Walleye')");
+		DB.execute("INSERT INTO bb_species VALUES(18,'Warmouth')");
+		DB.execute("INSERT INTO bb_subspecies VALUES(0,1,'Hybrid')");
+		DB.execute("INSERT INTO bb_subspecies VALUES(1,1,'Largemouth')");
+		DB.execute("INSERT INTO bb_subspecies VALUES(2,1,'Redeye')");
+		DB.execute("INSERT INTO bb_subspecies VALUES(3,1,'Rock')");
+		DB.execute("INSERT INTO bb_subspecies VALUES(4,1,'Smallmouth')");
+		DB.execute("INSERT INTO bb_subspecies VALUES(5,1,'Spotted')");
+		DB.execute("INSERT INTO bb_subspecies VALUES(6,1,'Striped')");
+		DB.execute("INSERT INTO bb_subspecies VALUES(7,1,'White')");
+		DB.execute("INSERT INTO bb_subspecies VALUES(8,5,'Common')");
+		DB.execute("INSERT INTO bb_subspecies VALUES(9,5,'Grass')");
+		DB.execute("INSERT INTO bb_subspecies VALUES(10,6,'Blue')");
+		DB.execute("INSERT INTO bb_subspecies VALUES(11,6,'Bullhead')");
+		DB.execute("INSERT INTO bb_subspecies VALUES(12,6,'Channel')");
+		DB.execute("INSERT INTO bb_subspecies VALUES(13,6,'Flathead')");
+		DB.execute("INSERT INTO bb_subspecies VALUES(14,6,'White')");
+		DB.execute("INSERT INTO bb_subspecies VALUES(15,7,'Black')");
+		DB.execute("INSERT INTO bb_subspecies VALUES(16,7,'White')");
+		DB.execute("INSERT INTO bb_subspecies VALUES(17,11,'White')");
+		DB.execute("INSERT INTO bb_subspecies VALUES(18,11,'Yellow')");
+		DB.execute("INSERT INTO bb_subspecies VALUES(19,12,'Chain')");
+		DB.execute("INSERT INTO bb_subspecies VALUES(20,12,'Redfin')");
+		DB.execute("INSERT INTO bb_subspecies VALUES(21,14,'American')");
+		DB.execute("INSERT INTO bb_subspecies VALUES(22,14,'Gizzard')");
+		DB.execute("INSERT INTO bb_subspecies VALUES(23,14,'Hickory')");
+		DB.execute("INSERT INTO bb_subspecies VALUES(24,14,'Threadfin')");
+		DB.execute("INSERT INTO bb_subspecies VALUES(25,15,'Green')");
+		DB.execute("INSERT INTO bb_subspecies VALUES(26,15,'Redbreast')");
+		DB.execute("INSERT INTO bb_subspecies VALUES(27,15,'Redear')");
+		DB.execute("INSERT INTO bb_subspecies VALUES(28,15,'Spotted')");
+		DB.execute("INSERT INTO bb_subspecies VALUES(29,16,'Brook')");
+		DB.execute("INSERT INTO bb_subspecies VALUES(30,16,'Brown')");
+		DB.execute("INSERT INTO bb_subspecies VALUES(31,16,'Rainbow')");
+		DB.execute("COMMIT");
+		
+		installed = 1;
+	}
 	
 	DB.close();
 	
-	Ti.App.Properties.setBool("DB_INSTALLED", true);
+	Ti.App.Properties.setInt("BB_DATABASE_VERSION", DatabaseVersion);
 };
 
-exports.populate();
+exports.upgradeDatabase();

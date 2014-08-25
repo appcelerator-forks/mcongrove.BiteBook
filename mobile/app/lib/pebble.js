@@ -5,16 +5,18 @@ PebbleKit.setAppUUID("4e212afd-b33e-440e-b20b-7f2c3fafc5ea");
 exports.Kit = PebbleKit;
 
 exports.connect = function(_data) {
-	Ti.API.info("@Pebble launchApp");
+	Ti.API.info("@Pebble connect");
+	
+	Ti.App.Properties.setBool("BB_PEBBLE_ENABLED", true);
 	
 	PebbleKit.launchApp({
 		success: function() {
-			Ti.API.info("@Pebble launchApp:success");
+			Ti.API.info("@Pebble connect:success");
 			
 			_data.success ? _data.success() : null;
 		},
 		error: function() {
-			Ti.API.info("@Pebble launchApp:error");
+			Ti.API.info("@Pebble connect:error");
 			
 			_data.error ? _data.error() : null;
 		}
@@ -22,14 +24,14 @@ exports.connect = function(_data) {
 };
 
 exports.disconnect = function(_data) {
-	Ti.API.info("@Pebble killApp");
+	Ti.API.info("@Pebble disconnect");
 	
 	PebbleKit.killApp({
 		success: function() {
-			Ti.API.info("@Pebble killApp:success");
+			Ti.API.info("@Pebble disconnect:success");
 		},
 		error: function() {
-			Ti.API.info("@Pebble killApp:error");
+			Ti.API.info("@Pebble disconnect:error");
 			
 			watchDisconnected();
 		}

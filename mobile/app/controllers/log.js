@@ -237,7 +237,13 @@ $.Submit.addEventListener("click", function(_event) {
 		$.ValueSubspecies.height = 0;
 		$.ValueSubspecies.bottom = 0;
 	} else {
-		alert("Please select a species");
+		var dialog = Ti.UI.createAlertDialog({
+			message: "Please select a species",
+			ok: "OK",
+			title: "Required Field"
+		});
+		
+		dialog.show();
 	}
 });
 

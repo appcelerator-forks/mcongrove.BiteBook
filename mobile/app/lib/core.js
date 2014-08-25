@@ -124,7 +124,7 @@ var App = {
 	 * Handles when a catch has been logged
 	 */
 	updateCatchCounts: function(_event) {
-		if(!App.BackgroundServiceActive) {
+		if(!App.BackgroundServiceActive && Ti.App.Properties.getBool("BB_PEBBLE_ENABLED", false)) {
 			App.Pebble.sendMessage({
 				message: {
 					0: App.Database.catchGetCountByTrip(),
@@ -137,7 +137,7 @@ var App = {
 	 * Fired when a catch is received from the Pebble
 	 */
 	receiveFromPebble: function(_data) {
-		if(!App.BackgroundServiceActive) {
+		if(!App.BackgroundServiceActive && Ti.App.Properties.getBool("BB_PEBBLE_ENABLED", false)) {
 			if(_data.message == "CONNECT") {
 				App.updateCatchCounts();
 			} else if(_data.message.charAt(0) == "{") {
