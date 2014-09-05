@@ -14,47 +14,51 @@ Species species[] = {
 		.name = "Bass"
 	},
 	{
-		.id = "10",
+		.id = "2",
 		.name = "Bluegill"
 	},
 	{
-		.id = "13",
+		.id = "5",
 		.name = "Carp"
 	},
 	{
-		.id = "16",
+		.id = "6",
 		.name = "Catfish"
 	},
 	{
-		.id = "22",
+		.id = "7",
 		.name = "Crappie"
 	},
 	{
-		.id = "25",
+		.id = "8",
 		.name = "Drum"
 	},
 	{
-		.id = "28",
+		.id = "9",
 		.name = "Gar"
 	},
 	{
-		.id = "31",
+		.id = "11",
 		.name = "Perch"
 	},
 	{
-		.id = "34",
+		.id = "12",
 		.name = "Pickeral"
 	},
 	{
-		.id = "37",
+		.id = "13",
 		.name = "Pike"
 	},
 	{
-		.id = "48",
+		.id = "14",
+		.name = "Shad"
+	},
+	{
+		.id = "15",
 		.name = "Sunfish"
 	},
 	{
-		.id = "53",
+		.id = "16",
 		.name = "Trout"
 	}
 };
