@@ -2,13 +2,13 @@
 	layout: "vertical"
 },
 "#Map": {
-	animate: true,
+	animate: false,
 	regionFit: true,
 	userLocation: true,
 	top: 0,
 	left: 0,
 	height: 150
 },
-"TableView": {
+"TableView[platform=ios]": {
 	separatorStyle: Ti.UI.iPhone.TableViewSeparatorStyle.NONE
 }

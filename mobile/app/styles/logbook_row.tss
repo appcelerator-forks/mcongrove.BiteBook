@@ -1,6 +1,8 @@
 "TableViewRow": {
-	selectionStyle: Ti.UI.iPhone.TableViewCellSelectionStyle.NONE,
 	editable: true
+},
+"TableViewRow[platform=ios]": {
+	selectionStyle: Ti.UI.iPhone.TableViewCellSelectionStyle.NONE,
 },
 ".container": {
 	top: 0,
@@ -31,5 +33,5 @@
 	width: 8,
 	height: 13,
 	right: 10,
-	image: "images/icon_child.png"
+	image: "/images/icon_child.png"
 }

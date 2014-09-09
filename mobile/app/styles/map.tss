@@ -2,7 +2,7 @@
 	layout: "vertical"
 },
 "#Map": {
-	animate: true,
+	animate: false,
 	regionFit: true,
 	userLocation: true,
 	top: 0,

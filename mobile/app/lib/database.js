@@ -214,6 +214,7 @@ exports.catchRemove = function(_catch_id, _trip_id) {
 };
 
 exports.catchGetById = function(_catch_id) {
+	Ti.API.warn("!:" + _catch_id);
 	var DB = Ti.Database.open("BiteBook");
 	
 	var result = DB.execute("SELECT * FROM bb_log WHERE id = ? LIMIT 1", _catch_id);
@@ -402,16 +403,20 @@ exports.subspeciesGetBySpeciesId = function(_species_id) {
 };
 
 exports.subspeciesGetById = function(_subspecies_id) {
-	var DB = Ti.Database.open("BiteBook");
-	
-	var result = DB.execute("SELECT name FROM bb_subspecies WHERE id = ? LIMIT 1", _subspecies_id);
-	
-	var name = result.fieldByName("name");
-	
-	result.close;
-	DB.close();
-	
-	return name;
+	if(_subspecies_id) {
+		var DB = Ti.Database.open("BiteBook");
+		
+		var result = DB.execute("SELECT name FROM bb_subspecies WHERE id = ? LIMIT 1", _subspecies_id);
+		
+		var name = result.fieldByName("name");
+		
+		result.close;
+		DB.close();
+		
+		return name;
+	} else {
+		return "";
+	}
 };
 
 exports.upgradeDatabase = function() {
@@ -423,7 +428,9 @@ exports.upgradeDatabase = function() {
 	
 	var DB = Ti.Database.open("BiteBook");
 	
-	DB.file.setRemoteBackup(true);
+	if(OS_IOS) {
+		DB.file.setRemoteBackup(true);
+	}
 	
 	if(installed == 0) {
 		DB.execute("DROP TABLE IF EXISTS bb_log");

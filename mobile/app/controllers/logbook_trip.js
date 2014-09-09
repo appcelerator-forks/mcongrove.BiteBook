@@ -39,7 +39,7 @@ function init() {
 			longitude: _catch.longitude,
 			title: _catch.species,
 			subtitle: _catch.weight.pound + " lb " + _catch.weight.ounce + " oz",
-			image: "images/icon_annotation.png"
+			image: "/images/icon_annotation.png"
 		});
 		
 		$.Map.addAnnotation(item);
@@ -59,11 +59,35 @@ function init() {
 	
 	$.Table.setData(rows);
 }
+
+if(OS_IOS) {		
+	$.Table.addEventListener("delete", function(_event) {
+		App.Database.catchRemove(_event.row.catch_id, TRIP.id);
+	});
+} else {	
+	$.Table.addEventListener("longclick", function(_event) {
+		var row = _event.row;
 		
-$.Table.addEventListener("delete", function(_event) {
-	App.Database.catchRemove(_event.row.catch_id, TRIP.id);
-});
+		var dialog = Ti.UI.createOptionDialog({
+			options: [ "Yes", "Cancel" ],
+			selectedIndex: 0,
+			cancel: 1,
+			title: "Delete this catch?"
+		});
+		
+		dialog.addEventListener("click", function(_event) {
+			if(!_event.cancel) {
+				App.Database.catchRemove(row.catch_id, TRIP.id);
+				
+				$.Table.deleteRow(row);
+			}
+		});
+		
+		dialog.show();
+	});
+}
 
 Ti.App.addEventListener("BB_EDIT", init);
+Ti.App.addEventListener("BB_UPDATE", init);
 
 init();

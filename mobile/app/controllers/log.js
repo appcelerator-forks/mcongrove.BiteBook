@@ -43,7 +43,7 @@ function openPickerSpecies() {
 			$.ValueSpecies.text = App.Database.speciesGetById(_data);
 			$.ValueSubspecies.text = "Tap to Select";
 			$.ValueSpecies.color = "#404556";
-			$.ValueSubspecies.color = "#666";
+			$.ValueSubspecies.color = OS_IOS ? "#666" : "#AAA";
 			$.ValueSpecies.font = {
 				fontSize: 18,
 				fontFamily: "HelveticaNeue-Regular"
@@ -212,10 +212,10 @@ $.Submit.addEventListener("click", function(_event) {
 		$.ValueWeight.text = "0 lb 0 oz";
 		$.ValueLength.text = "0 ft 0 in";
 		
-		$.ValueSpecies.color = "#666";
-		$.ValueSubspecies.color = "#666";
-		$.ValueWeight.color = "#666";
-		$.ValueLength.color = "#666";
+		$.ValueSpecies.color = OS_IOS ? "#666" : "#AAA";
+		$.ValueSubspecies.color = OS_IOS ? "#666" : "#AAA";
+		$.ValueWeight.color = OS_IOS ? "#666" : "#AAA";
+		$.ValueLength.color = OS_IOS ? "#666" : "#AAA";
 		
 		$.ValueSpecies.font = {
 			fontSize: 18,

@@ -1,6 +1,6 @@
 <Alloy>
 	<Window id="LogWindow" title="Log a Fish">
-		<RightNavButton>
+		<RightNavButton platform="ios">
 			<Button image="images/icon_settings.png" onClick="App.openSettings" />
 		</RightNavButton>
 		

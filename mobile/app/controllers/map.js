@@ -25,7 +25,7 @@ function updateLocation(_geolocation) {
 			longitude: _catch.longitude,
 			title: _catch.species,
 			subtitle: _catch.weight.pound + " lb " + _catch.weight.ounce + " oz",
-			image: "images/icon_annotation.png"
+			image: "/images/icon_annotation.png"
 		});
 		
 		$.Map.addAnnotation(item);

@@ -50,7 +50,11 @@ function init() {
 			row.addEventListener("click", function(_event) {
 				var detail = Alloy.createController(_event.row.controller).getView();
 				
-				$.NavWindow.openWindow(detail);
+				if(OS_IOS) {
+					$.NavWindow.openWindow(detail);
+				} else {
+					detail.open();
+				}
 			});
 		} else if(OPTIONS[i].action) {
 			row.addEventListener("click", OPTIONS[i].action);
@@ -63,7 +67,11 @@ function init() {
 }
 
 function closeSettings() {
-	$.NavWindow.close();
+	if(OS_IOS) {
+		$.NavWindow.close();
+	} else {
+		$.SettingsWindow.close();
+	}
 }
 
 init();

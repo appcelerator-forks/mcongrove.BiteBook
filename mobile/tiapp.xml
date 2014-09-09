@@ -2,7 +2,7 @@
 <ti:app xmlns:ti="http://ti.appcelerator.org">
     <id>com.mcongrove.bitebook</id>
     <name>BiteBook</name>
-    <version>1.0</version>
+    <version>1.1</version>
     <publisher>Matthew Congrove</publisher>
     <url>http://www.mattcongrove.com</url>
     <description>A mobile fish logging application with built-in support for the Pebble smartwatch.</description>
@@ -44,7 +44,24 @@
             </dict>
         </plist>
     </ios>
-    <android xmlns:android="http://schemas.android.com/apk/res/android"/>
+    <android xmlns:android="http://schemas.android.com/apk/res/android">
+		<manifest>
+			<uses-permission android:name="android.permission.INTERNET"/>
+			<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/> 
+			<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+			<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+			<uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
+			<uses-feature android:glEsVersion="0x00020000" android:required="true"/>
+			<uses-permission android:name="com.mcongrove.bitebook.permission.MAPS_RECEIVE"/>
+			<permission android:name="com.mcongrove.bitebook.permission.MAPS_RECEIVE" android:protectionLevel="signature"/>
+			<application>
+				<meta-data android:name="com.google.android.maps.v2.API_KEY" android:value="AIzaSyAoj084Ssbdm37doCVOajr-ohl_vrqLat8"/>
+			</application>
+		</manifest>
+		<services>
+			<service url="background.js" type="interval" />
+		</services>
+	</android>
     <mobileweb>
         <precache/>
         <splash>
@@ -54,12 +71,14 @@
         <theme>default</theme>
     </mobileweb>
     <modules>
-        <module platform="iphone">ti.map</module>
-        <module platform="iphone" version="0.5.1">org.beuckman.tipebble</module>
         <module platform="iphone">dk.napp.social</module>
+        <module platform="android">com.mcongrove.pebble</module>
+        <module platform="iphone">com.mcongrove.pebble</module>
+        <module platform="iphone">ti.map</module>
+        <module platform="android">ti.map</module>
     </modules>
     <deployment-targets>
-        <target device="android">false</target>
+        <target device="android">true</target>
         <target device="blackberry">false</target>
         <target device="ipad">false</target>
         <target device="iphone">true</target>

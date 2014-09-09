@@ -1,8 +1,7 @@
 <Alloy>
 	<Window id="SettingsAboutWindow" title="About BiteBook">
 		<Label text="BiteBook is developed by Matthew Congrove and is available as open source at BiteBook.net" />
-		<Label text="This application is built on the Appcelerator platform and uses the TiPebble module by Joe Beuckman" />
-		<Label text="Special thanks to Chris Bowley, Joe Beuckman, Rick Blalock and Scott Davenport for their help, code, mentorship and testing. Thanks also to the team at Pebble and the folks at XDA for sponsoring the development contest that led to this application" />
+		<Label text="Special thanks to Jon Alter, Chris Bowley, Joe Beuckman, Rick Blalock and Scott Davenport for their help, code, mentorship and testing. Thanks also to the team at Pebble and the folks at XDA for sponsoring the development contest that led to this application" />
 		<Label text="For saltwater logging (and regulations), please download the Fish Rules app for iOS or Android; we're BFFs" />
 		<Label text="BiteBook, Coypright 2014 Matthew Congrove. View our privacy policy at BiteBook.net" />
 	</Window>

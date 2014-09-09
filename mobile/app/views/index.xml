@@ -1,5 +1,5 @@
 <Alloy>
-	<TabGroup id="TabGroup">
+	<TabGroup id="TabGroup" platform="ios">
 		<Tab id="TabLog" title="Log a Fish" icon="images/icon_log.png">
 			<Require type="view" src="log" />
 		</Tab>
@@ -7,6 +7,22 @@
 			<Require type="view" src="logbook" />
 		</Tab>
 		<Tab id="TabMap" title="Map" icon="images/icon_map.png">
+			<Require type="view" src="map" />
+		</Tab>
+	</TabGroup>
+	
+	<TabGroup id="TabGroup" platform="android">
+		<Menu>
+			<MenuItem title="Settings" showAsAction="Ti.Android.SHOW_AS_ACTION_NEVER" onClick="App.openSettings" />
+		</Menu>
+		
+		<Tab id="TabLog" title="Log a Fish">
+			<Require type="view" src="log" />
+		</Tab>
+		<Tab id="TabLogbook" title="Logbook">
+			<Require type="view" src="logbook" />
+		</Tab>
+		<Tab id="TabMap" title="Map">
 			<Require type="view" src="map" />
 		</Tab>
 	</TabGroup>

@@ -1,6 +1,3 @@
-"Window": {
-	
-},
 "#Status": {
 	top: 40,
 	color: "#3DA0DA"
@@ -14,7 +11,7 @@
 	height: 212,
 	top: 0,
 	left: 0,
-	image: "images/pebble.png"
+	image: "/images/pebble.png"
 },
 "#Dots": {
 	width: 123,

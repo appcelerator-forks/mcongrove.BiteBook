@@ -54,7 +54,7 @@ var App = {
 	 * Background service flags
 	 */
 	BackgroundServiceStarted: false,
-	BackgroundServiceActive: false,
+	BackgroundServiceActive: OS_IOS ? false : true, // Background intent is ALWAYS running for Android
 	/**
 	 * Geo coordinates
 	 */
@@ -75,17 +75,15 @@ var App = {
 		Ti.Gesture.addEventListener("orientationchange", App.orientationChange);
 		Ti.App.addEventListener("BB_UPDATE", App.updateCatchCounts);
 		App.Pebble.Kit.addEventListener("update", App.receiveFromPebble);
-
-		if(OS_ANDROID) {
-			Ti.Android.currentActivity.addEventListener("resume", App.resume);
-		}
 		
-		// Register geolocation service
-		if(Ti.Geolocation.locationServicesEnabled) {
-			Ti.Geolocation.purpose = "Catch Geolocation Logging";
-			Ti.Geolocation.accuracy = Ti.Geolocation.ACCURACY_BEST;
-			Ti.Geolocation.distanceFilter = 95;
-			Ti.Geolocation.preferredProvider = Ti.Geolocation.PROVIDER_GPS;
+		// Register geolocation service for iOS (Android is registered in background intent)
+		if(OS_IOS) {
+			if(Ti.Geolocation.locationServicesEnabled) {
+				Ti.Geolocation.purpose = "Catch Geolocation Logging";
+				Ti.Geolocation.accuracy = Ti.Geolocation.ACCURACY_BEST;
+				Ti.Geolocation.distanceFilter = 95;
+				Ti.Geolocation.preferredProvider = Ti.Geolocation.PROVIDER_GPS;
+			}
 			
 			Ti.Geolocation.addEventListener("location", function(_event) {
 				if(_event.error) {
@@ -138,9 +136,7 @@ var App = {
 	 */
 	receiveFromPebble: function(_data) {
 		if(!App.BackgroundServiceActive && Ti.App.Properties.getBool("BB_PEBBLE_ENABLED", false)) {
-			if(_data.message == "CONNECT") {
-				App.updateCatchCounts();
-			} else if(_data.message.charAt(0) == "{") {
+			if(_data.message.charAt(0) == "{") {
 				var _catch = JSON.parse(_data.message);
 				
 				var VALUES = {
@@ -157,6 +153,8 @@ var App = {
 				
 				App.Database.catchAdd(VALUES);
 			}
+			
+			setTimeout(App.updateCatchCounts, 1000);
 		}
 	},
 	/**

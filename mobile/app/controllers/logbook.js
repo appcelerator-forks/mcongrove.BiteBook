@@ -23,8 +23,33 @@ function init() {
 	$.Table.setData(rows);
 }
 
-$.LogbookWindow.addEventListener("focus", init);
+if(OS_IOS) {		
+	$.Table.addEventListener("delete", function(_event) {
+		App.Database.tripRemove(_event.row.trip_id);
+	});
+} else {	
+	$.Table.addEventListener("longclick", function(_event) {
+		var row = _event.row;
 		
-$.Table.addEventListener("delete", function(_event) {
-	App.Database.tripRemove(_event.row.trip_id);
-});
+		var dialog = Ti.UI.createOptionDialog({
+			options: [ "Yes", "Cancel" ],
+			selectedIndex: 0,
+			cancel: 1,
+			title: "Delete this trip?"
+		});
+		
+		dialog.addEventListener("click", function(_event) {
+			if(!_event.cancel) {
+				App.Database.tripRemove(row.trip_id);
+				
+				$.Table.deleteRow(row);
+			}
+		});
+		
+		dialog.show();
+	});
+}
+
+$.LogbookWindow.addEventListener("focus", init);
+Ti.App.addEventListener("BB_EDIT", init);
+Ti.App.addEventListener("BB_UPDATE", init);

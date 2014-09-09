@@ -19,11 +19,16 @@
 	right: 10,
 	bottom: 20,
 	width: Ti.UI.SIZE,
-	color: "#666",
 	font: {
 		fontFamily: "HelveticaNeue-UltraLightItalic"
 	},
 	textAlign: "right"
+},
+".value[platform=ios]": {
+	color: "#666"
+},
+".value[platform=android]": {
+	color: "#AAA"
 },
 "#RowSubspecies": {
 	height: 0,

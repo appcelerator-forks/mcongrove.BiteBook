@@ -1,19 +1,23 @@
 "TabGroup": {
 	activeTabBackgroundColor: "#404556",
 	backgroundColor: "#404556",
-	tabsBackgroundColor: "#404556",
+	tabsBackgroundColor: "#404556"
+},
+"TabGroup[platform=ios]": {
 	activeTabIconTint: "#FFF"
 },
 "Window": {
 	backgroundColor: "#FFF",
 	barColor: "#3DA0DA",
-	navTintColor: "#FFF",
-	tintColor: "#3DA0DA",
-	statusBarStyle: Ti.UI.iPhone.StatusBar.LIGHT_CONTENT,
 	backButtonTitle: "",
 	titleAttributes: {
 		color: "#FFF"
 	}
+},
+"Window[platform=ios]": {
+	statusBarStyle: Ti.UI.iPhone.StatusBar.LIGHT_CONTENT,
+	navTintColor: "#FFF",
+	tintColor: "#3DA0DA"
 },
 "Label": {
 	color: "#404556",

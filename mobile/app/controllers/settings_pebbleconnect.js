@@ -1,8 +1,6 @@
 // App bootstrap
 var App = require("core");
 
-var interval;
-
 function init() {
 	App.Pebble.connect({
 		success: watchConnected,
@@ -24,8 +22,6 @@ function watchConnected(_event) {
 		
 		$.Status.text = "Connected";
 		
-		clearInterval(interval);
-		
 		setTimeout(function() {
 			$.Dots.text = "✓";
 		}, 500);
@@ -34,8 +30,6 @@ function watchConnected(_event) {
 
 function watchDisconnected(_event) {
 	$.Status.text = "Disconnected";
-	
-	clearInterval(interval);
 	
 	setTimeout(function() {
 		$.Dots.text = "✗";

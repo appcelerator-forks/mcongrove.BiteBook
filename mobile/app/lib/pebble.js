@@ -1,4 +1,4 @@
-var PebbleKit = require("org.beuckman.tipebble");
+var PebbleKit = require("com.mcongrove.pebble");
 
 PebbleKit.setAppUUID("4e212afd-b33e-440e-b20b-7f2c3fafc5ea");
 
@@ -9,11 +9,23 @@ exports.connect = function(_data) {
 	
 	Ti.App.Properties.setBool("BB_PEBBLE_ENABLED", true);
 	
-	PebbleKit.launchApp({
+	PebbleKit.connect({
 		success: function() {
 			Ti.API.info("@Pebble connect:success");
+			Ti.API.info("@Pebble launchApp");
 			
-			_data.success ? _data.success() : null;
+			PebbleKit.launchApp({
+				success: function() {
+					Ti.API.info("@Pebble launchApp:success");
+					
+					_data.success ? _data.success() : null;
+				},
+				error: function() {
+					Ti.API.info("@Pebble launchApp:error");
+					
+					_data.error ? _data.error() : null;
+				}
+			});
 		},
 		error: function() {
 			Ti.API.info("@Pebble connect:error");
@@ -41,9 +53,17 @@ exports.disconnect = function(_data) {
 exports.registerBackgroundService = function() {
 	Ti.API.info("@Pebble registerBackgroundService");
 	
-	Ti.App.iOS.registerBackgroundService({
-		url: "background.js"
-	});
+	if(OS_IOS) {
+		Ti.App.iOS.registerBackgroundService({
+			url: "background.js"
+		});
+	} else {
+		var intent = Ti.Android.createServiceIntent({
+			url: "background.js"
+		});
+		
+		Ti.Android.startService(intent);
+	}
 };
 
 exports.sendMessage = function(_data) {
