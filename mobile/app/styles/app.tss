@@ -12,7 +12,10 @@
 	backButtonTitle: "",
 	titleAttributes: {
 		color: "#FFF"
-	}
+	},
+	orientationModes: [
+		Ti.UI.PORTRAIT
+	]
 },
 "Window[platform=ios]": {
 	statusBarStyle: Ti.UI.iPhone.StatusBar.LIGHT_CONTENT,
