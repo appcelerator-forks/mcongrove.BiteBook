@@ -101,18 +101,26 @@ exports.tripGetAll = function() {
 };
 
 exports.tripGetById = function(_trip_id) {
-	var DB = Ti.Database.open("BiteBook");
+	var trip;
 	
-	var result = DB.execute("SELECT * FROM bb_trip WHERE id = ? LIMIT 1", _trip_id);
-	
-	var trip = {
-		id: result.fieldByName("id"),
-		start: result.fieldByName("start"),
-		end: result.fieldByName("end")
-	};
-	
-	result.close;
-	DB.close();
+	if(_trip_id) {
+		var DB = Ti.Database.open("BiteBook");
+		
+		var result = DB.execute("SELECT * FROM bb_trip WHERE id = ? LIMIT 1", _trip_id);
+		
+		while(result.isValidRow()) {
+			trip = {
+				id: result.fieldByName("id"),
+				start: result.fieldByName("start"),
+				end: result.fieldByName("end")
+			};
+			
+			result.next();
+		}
+		
+		result.close;
+		DB.close();
+	}
 	
 	return trip;
 };
@@ -214,22 +222,27 @@ exports.catchRemove = function(_catch_id, _trip_id) {
 };
 
 exports.catchGetById = function(_catch_id) {
-	Ti.API.warn("!:" + _catch_id);
 	var DB = Ti.Database.open("BiteBook");
 	
 	var result = DB.execute("SELECT * FROM bb_log WHERE id = ? LIMIT 1", _catch_id);
 	
-	var _catch = {
-		id: result.fieldByName("id"),
-		timestamp: result.fieldByName("timestamp"),
-		trip_id: result.fieldByName("trip_id"),
-		species: result.fieldByName("species"),
-		subspecies: result.fieldByName("subspecies"),
-		weight: JSON.parse(result.fieldByName("weight")),
-		length: JSON.parse(result.fieldByName("length")),
-		latitude: result.fieldByName("latitude"),
-		longitude: result.fieldByName("longitude")
-	};
+	var _catch;
+	
+	while(result.isValidRow()) {
+		_catch = {
+			id: result.fieldByName("id"),
+			timestamp: result.fieldByName("timestamp"),
+			trip_id: result.fieldByName("trip_id"),
+			species: result.fieldByName("species"),
+			subspecies: result.fieldByName("subspecies"),
+			weight: JSON.parse(result.fieldByName("weight")),
+			length: JSON.parse(result.fieldByName("length")),
+			latitude: result.fieldByName("latitude"),
+			longitude: result.fieldByName("longitude")
+		};
+		
+		result.next();
+	}
 	
 	result.close;
 	DB.close();
@@ -355,7 +368,13 @@ exports.speciesGetById = function(_species_id) {
 	
 	var result = DB.execute("SELECT name FROM bb_species WHERE id = ? LIMIT 1", _species_id);
 	
-	var name = result.fieldByName("name");
+	var name;
+	
+	while(result.isValidRow()) {
+		name = result.fieldByName("name");
+		
+		result.next();
+	}
 	
 	result.close;
 	DB.close();
@@ -381,25 +400,29 @@ exports.speciesHasSubspecies = function(_species_id) {
 };
 
 exports.subspeciesGetBySpeciesId = function(_species_id) {
-	var DB = Ti.Database.open("BiteBook");
-	
-	var result = DB.execute("SELECT id, name FROM bb_subspecies WHERE parent_id = ? ORDER BY name ASC", _species_id);
-	var species = [];
-	
-	while(result.isValidRow()) {
-		var specy = {
-			id: result.fieldByName("id"),
-			name: result.fieldByName("name")
-		};
+	if(_species_id) {
+		var DB = Ti.Database.open("BiteBook");
 		
-		species.push(specy);
-		result.next();
+		var result = DB.execute("SELECT id, name FROM bb_subspecies WHERE parent_id = ? ORDER BY name ASC", _species_id);
+		var species = [];
+		
+		while(result.isValidRow()) {
+			var specy = {
+				id: result.fieldByName("id"),
+				name: result.fieldByName("name")
+			};
+			
+			species.push(specy);
+			result.next();
+		}
+		
+		result.close;
+		DB.close();
+		
+		return species;
+	} else {
+		return null;
 	}
-	
-	result.close;
-	DB.close();
-	
-	return species;
 };
 
 exports.subspeciesGetById = function(_subspecies_id) {
@@ -408,7 +431,13 @@ exports.subspeciesGetById = function(_subspecies_id) {
 		
 		var result = DB.execute("SELECT name FROM bb_subspecies WHERE id = ? LIMIT 1", _subspecies_id);
 		
-		var name = result.fieldByName("name");
+		var name;
+		
+		while(result.isValidRow()) {
+			name = result.fieldByName("name");
+			
+			result.next();
+		}
 		
 		result.close;
 		DB.close();

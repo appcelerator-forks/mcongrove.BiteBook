@@ -9,6 +9,11 @@ var TRIP, CATCHES;
 
 function init() {
 	TRIP = App.Database.tripGetById(args.id);
+	
+	if(!TRIP.id) {
+		return;
+	}
+	
 	CATCHES = App.Database.catchGetByTripId(TRIP.id);
 	
 	var date = Moment.unix(TRIP.start);

@@ -234,8 +234,7 @@ $.Submit.addEventListener("click", function(_event) {
 			fontFamily: "HelveticaNeue-UltraLightItalic"
 		};
 		
-		$.ValueSubspecies.height = 0;
-		$.ValueSubspecies.bottom = 0;
+		hideSubspeciesRow();
 	} else {
 		var dialog = Ti.UI.createAlertDialog({
 			message: "Please select a species",
