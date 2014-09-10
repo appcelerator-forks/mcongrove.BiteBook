@@ -8,7 +8,7 @@ A mobile fish logging application for the iPhone, Android and Pebble Smartwatch.
 
 The `/mobile` directory contains the BiteBook iPhone/Android application. This is built on the Appcelerator Titanium platform.
 
-You'll need a copy of of the [TitaniumPebble module](https://github.com/mcongrove/TitaniumPebble).
+You'll need a copy of the [TitaniumPebble module](https://github.com/mcongrove/TitaniumPebble).
 
 ##### Pebble Project
 
